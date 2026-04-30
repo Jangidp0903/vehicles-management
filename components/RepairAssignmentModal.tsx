@@ -18,6 +18,7 @@ import { themeColors } from "@/lib/themeColors";
 interface Technician {
   empId: string;
   name: string;
+  isAvailable: boolean;
 }
 
 interface Part {
@@ -211,8 +212,8 @@ const RepairAssignmentModal: React.FC<RepairAssignmentModalProps> = ({
               >
                 <option value="">Select a technician...</option>
                 {technicians.map((tech) => (
-                  <option key={tech.empId} value={tech.empId}>
-                    {tech.name} ({tech.empId})
+                  <option key={tech.empId} value={tech.empId} disabled={!tech.isAvailable}>
+                    {tech.name} ({tech.empId}) - {tech.isAvailable ? "Available" : "On Job"}
                   </option>
                 ))}
               </select>

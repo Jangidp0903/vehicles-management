@@ -5,7 +5,7 @@ import Technician from "@/models/Technician";
 export async function GET() {
   try {
     await connectToDatabase();
-    const technicians = await Technician.find({ isAvailable: true }).sort({ name: 1 });
+    const technicians = await Technician.find({}).sort({ name: 1 });
     return NextResponse.json({
       success: true,
       data: technicians,
