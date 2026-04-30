@@ -24,6 +24,7 @@ const Sidebar = ({
   ];
 
   const technicianItems = [
+    { name: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
     { name: "My Jobs", icon: Wrench, path: "/admin/tech-jobs" },
     { name: "Repair Queue", icon: Bike, path: "/admin/vehicles" },
   ];
