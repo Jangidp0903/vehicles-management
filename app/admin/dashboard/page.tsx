@@ -12,6 +12,7 @@ import {
   History,
   Loader2,
   LayoutDashboard,
+  ClipboardCheck,
 } from "lucide-react";
 import SurrenderModal from "@/components/SurrenderModal";
 import { useRole } from "@/lib/RoleContext";
@@ -159,33 +160,59 @@ export default function Dashboard() {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {role === "OPERATOR" ? (
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="group relative flex flex-col items-start p-5 rounded-2xl border-2 transition-colors hover:border-red-400 text-left bg-white cursor-pointer"
-              style={{ borderColor: themeColors.border }}
-            >
-              <div className="p-3 rounded-xl bg-red-50 text-red-500 mb-4 transition-colors group-hover:bg-red-500 group-hover:text-white">
-                <LogOut size={24} />
-              </div>
-              <h3
-                className="text-base font-bold mb-1"
-                style={{ color: themeColors.textPrimary }}
+            <>
+              {/* Surrender Card */}
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="group relative flex flex-col items-start p-5 rounded-2xl border-2 transition-colors hover:border-red-400 text-left bg-white cursor-pointer"
+                style={{ borderColor: themeColors.border }}
               >
-                Surrender Vehicle
-              </h3>
-              <p className="text-xs text-gray-500 mb-6 font-medium leading-relaxed">
-                Search for a vehicle to end a rental and move it to the
-                inspection stage.
-              </p>
-              <div
-                className="mt-auto flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest"
-                style={{ color: themeColors.primary }}
+                <div className="p-3 rounded-xl bg-red-50 text-red-500 mb-4 transition-colors group-hover:bg-red-500 group-hover:text-white">
+                  <LogOut size={24} />
+                </div>
+                <h3
+                  className="text-base font-bold mb-1"
+                  style={{ color: themeColors.textPrimary }}
+                >
+                  Surrender Vehicle
+                </h3>
+                <p className="text-xs text-gray-500 mb-6 font-medium leading-relaxed">
+                  Search for a vehicle to end a rental and move it to the
+                  inspection stage.
+                </p>
+                <div className="mt-auto flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest text-red-600">
+                  Initiate Return
+                  <ChevronRight size={14} />
+                </div>
+              </button>
+
+              {/* Inspection Queue Card */}
+              <button
+                onClick={() => router.push("/admin/inspections")}
+                className="group relative flex flex-col items-start p-5 rounded-2xl border-2 transition-colors hover:border-teal-400 text-left bg-white cursor-pointer"
+                style={{ borderColor: themeColors.border }}
               >
-                Initiate Return
-                <ChevronRight size={14} />
-              </div>
-            </button>
+                <div className="p-3 rounded-xl bg-teal-50 text-teal-500 mb-4 transition-colors group-hover:bg-teal-500 group-hover:text-white">
+                  <ClipboardCheck size={24} />
+                </div>
+                <h3
+                  className="text-base font-bold mb-1"
+                  style={{ color: themeColors.textPrimary }}
+                >
+                  Pending Inspections
+                </h3>
+                <p className="text-xs text-gray-500 mb-6 font-medium leading-relaxed">
+                  Review and complete reports for vehicles currently under
+                  inspection.
+                </p>
+                <div className="mt-auto flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest text-teal-600">
+                  Open Queue
+                  <ChevronRight size={14} />
+                </div>
+              </button>
+            </>
           ) : (
+            /* Maintenance Queue Card */
             <button
               onClick={() => router.push("/admin/tech-jobs")}
               className="group relative flex flex-col items-start p-5 rounded-2xl border-2 transition-colors hover:border-emerald-400 text-left bg-white cursor-pointer"
@@ -210,6 +237,31 @@ export default function Dashboard() {
               </div>
             </button>
           )}
+
+          {/* Fleet Inventory Card (Visible to All) */}
+          <button
+            onClick={() => router.push("/admin/vehicles")}
+            className="group relative flex flex-col items-start p-5 rounded-2xl border-2 transition-colors hover:border-blue-400 text-left bg-white cursor-pointer"
+            style={{ borderColor: themeColors.border }}
+          >
+            <div className="p-3 rounded-xl bg-blue-50 text-blue-500 mb-4 transition-colors group-hover:bg-blue-500 group-hover:text-white">
+              <Bike size={24} />
+            </div>
+            <h3
+              className="text-base font-bold mb-1"
+              style={{ color: themeColors.textPrimary }}
+            >
+              View Inventory
+            </h3>
+            <p className="text-xs text-gray-500 mb-6 font-medium leading-relaxed">
+              View comprehensive details of all vehicles, history and current
+              status.
+            </p>
+            <div className="mt-auto flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest text-blue-600">
+              View Inventory
+              <ChevronRight size={14} />
+            </div>
+          </button>
         </div>
       </div>
 

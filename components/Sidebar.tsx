@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { usePathname } from "next/navigation";
-import { X, LayoutDashboard, Bike, Wrench } from "lucide-react";
+import { X, LayoutDashboard, Bike, Wrench, ClipboardCheck } from "lucide-react";
 import Link from "next/link";
 import { themeColors } from "@/lib/themeColors";
 import { useRole } from "@/lib/RoleContext";
@@ -21,6 +21,7 @@ const Sidebar = ({
   const operatorItems = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
     { name: "Vehicles Detail", icon: Bike, path: "/admin/vehicles" },
+    { name: "Inspection Queue", icon: ClipboardCheck, path: "/admin/inspections" },
   ];
 
   const technicianItems = [
