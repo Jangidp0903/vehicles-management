@@ -18,6 +18,7 @@ export default function VehiclesPage() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState("ALL");
   const { role } = useRole();
 
   useEffect(() => {
@@ -50,7 +51,10 @@ export default function VehiclesPage() {
       if (role === "TECHNICIAN") {
         return v.status === "UNDER_REPAIR";
       }
-      return true;
+      
+      // Tab-based filtering
+      if (activeTab === "ALL") return true;
+      return v.status === activeTab;
     })
     .filter(
       (v) =>
@@ -93,6 +97,43 @@ export default function VehiclesPage() {
           </p>
         </div>
       </div>
+
+      {/* Tabs Filter */}
+      {role !== "TECHNICIAN" && (
+        <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
+          {[
+            { id: "ALL", label: "All Vehicles" },
+            { id: "RFD", label: "RFD" },
+            { id: "RENTED", label: "Rented" },
+            { id: "UNDER_INSPECTION", label: "In Inspection" },
+            { id: "UNDER_REPAIR", label: "In Repair" },
+            { id: "DAMAGED", label: "Damaged" },
+          ].map((tab) => {
+            const count = tab.id === "ALL" 
+              ? vehicles.length 
+              : vehicles.filter(v => v.status === tab.id).length;
+            
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap border-2 cursor-pointer ${
+                  activeTab === tab.id
+                    ? "bg-gray-900 text-white border-gray-900 shadow-lg shadow-gray-200"
+                    : "bg-white text-gray-500 border-gray-100 hover:border-gray-200"
+                }`}
+              >
+                {tab.label}
+                <span className={`px-1.5 py-0.5 rounded-md text-[10px] ${
+                  activeTab === tab.id ? "bg-white/20 text-white" : "bg-gray-100 text-gray-400"
+                }`}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* Search Section */}
       <div className="flex flex-col md:flex-row gap-4 mb-4">
