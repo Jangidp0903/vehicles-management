@@ -3,25 +3,27 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
-import {
-  Loader2,
-  Bike,
-  Gauge,
-  ClipboardCheck,
-  Camera,
+import { 
+  Loader2, 
+  Bike, 
+  Gauge, 
+  ClipboardCheck, 
+  Camera, 
   Save,
   AlertCircle,
   CheckCircle2,
   ChevronLeft,
   Plus,
+  Circle,
+  CheckCircle,
+  AlertTriangle
 } from "lucide-react";
 import { themeColors } from "@/lib/themeColors";
 
-interface Vehicle {
-  vehicleId: string;
-  modelName: string;
-  status: string;
-  currentOdometer: number;
+interface ChecklistItem {
+  status: "OK" | "DAMAGED" | null;
+  notes: string;
+  photos: string[];
 }
 
 interface JobCard {
@@ -31,38 +33,49 @@ interface JobCard {
   inspection: {
     odometer: number;
     checklist: {
-      bodyAndFrame: string;
-      tyresAndWheels: string;
-      batteryAndCables: string;
-      lightsAndIndicators: string;
-      brakes: string;
+      bodyAndFrame: ChecklistItem;
+      tyresAndWheels: ChecklistItem;
+      batteryAndCables: ChecklistItem;
+      lightsAndIndicators: ChecklistItem;
+      brakes: ChecklistItem;
     };
-    findings: string;
-    photos: string[];
     isDamaged: boolean;
   };
   status: string;
 }
 
+interface Vehicle {
+  vehicleId: string;
+  modelName: string;
+  status: string;
+  currentOdometer: number;
+}
+
+const INSPECTION_ITEMS = [
+  { id: "bodyAndFrame", label: "Body & Frame", icon: <Bike size={20} /> },
+  { id: "tyresAndWheels", label: "Tyres & Wheels", icon: <Gauge size={20} /> },
+  { id: "batteryAndCables", label: "Battery & Cables", icon: <AlertCircle size={20} /> },
+  { id: "lightsAndIndicators", label: "Lights & Indicators", icon: <AlertCircle size={20} /> },
+  { id: "brakes", label: "Brakes System", icon: <Gauge size={20} /> },
+];
+
 export default function InspectionPage() {
   const { vehicleId } = useParams();
   const router = useRouter();
-
+  
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
   const [jobCard, setJobCard] = useState<JobCard | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Form State
-  const [checklist, setChecklist] = useState({
-    bodyAndFrame: "OK",
-    tyresAndWheels: "OK",
-    batteryAndCables: "OK",
-    lightsAndIndicators: "OK",
-    brakes: "OK"
+  
+  const [checklist, setChecklist] = useState<Record<string, ChecklistItem>>({
+    bodyAndFrame: { status: null, notes: "", photos: [] },
+    tyresAndWheels: { status: null, notes: "", photos: [] },
+    batteryAndCables: { status: null, notes: "", photos: [] },
+    lightsAndIndicators: { status: null, notes: "", photos: [] },
+    brakes: { status: null, notes: "", photos: [] },
   });
-  const [findings, setFindings] = useState("");
-  const [isDamaged, setIsDamaged] = useState(false);
+
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -79,21 +92,13 @@ export default function InspectionPage() {
         if (jRes.data.success) {
           const jc = jRes.data.data;
           setJobCard(jc);
-          setChecklist(jc.inspection.checklist || {
-            bodyAndFrame: "OK",
-            tyresAndWheels: "OK",
-            batteryAndCables: "OK",
-            lightsAndIndicators: "OK",
-            brakes: "OK"
-          });
-          setFindings(jc.inspection.findings || "");
-          setIsDamaged(jc.inspection.isDamaged || false);
+          if (jc.inspection.checklist) {
+            setChecklist(jc.inspection.checklist);
+          }
         }
       } catch (err) {
         if (axios.isAxiosError(err)) {
-          setError(
-            err.response?.data?.error || "Failed to load inspection data",
-          );
+          setError(err.response?.data?.error || "Failed to load data");
         } else {
           setError("Failed to load inspection data");
         }
@@ -102,42 +107,58 @@ export default function InspectionPage() {
       }
     };
 
-    if (vehicleId) {
-      fetchData();
-    }
+    if (vehicleId) fetchData();
   }, [vehicleId]);
 
-  const toggleChecklistItem = (key: keyof typeof checklist) => {
-    const newVal = checklist[key] === "OK" ? "DAMAGED" : "OK";
-    const newChecklist = { ...checklist, [key]: newVal };
-    setChecklist(newChecklist);
-    
-    // Automatically set isDamaged to true if any item is DAMAGED
-    const hasAnyDamage = Object.values(newChecklist).some(val => val === "DAMAGED");
-    setIsDamaged(hasAnyDamage);
+  const updateItemStatus = (id: string, status: "OK" | "DAMAGED") => {
+    setChecklist(prev => ({
+      ...prev,
+      [id]: { ...prev[id], status }
+    }));
+  };
+
+  const updateItemNotes = (id: string, notes: string) => {
+    setChecklist(prev => ({
+      ...prev,
+      [id]: { ...prev[id], notes }
+    }));
   };
 
   const handleSave = async () => {
     if (!jobCard) return;
 
+    // Validation: Check if all items are selected
+    const allSelected = INSPECTION_ITEMS.every(item => checklist[item.id].status !== null);
+    if (!allSelected) {
+      alert("Please complete all inspection checklist items before submitting.");
+      return;
+    }
+
+    // Validation: Check if damaged items have notes
+    const missingNotes = INSPECTION_ITEMS.find(item => checklist[item.id].status === "DAMAGED" && !checklist[item.id].notes.trim());
+    if (missingNotes) {
+      alert(`Please provide notes for the damaged item: ${missingNotes.label}`);
+      return;
+    }
+
     setSaving(true);
     try {
+      const isDamaged = Object.values(checklist).some(item => item.status === "DAMAGED");
+      
       await axios.patch(`/api/job-cards/id/${jobCard.jobCardId}`, {
         inspection: {
           ...jobCard.inspection,
           checklist,
-          findings,
-          isDamaged,
+          isDamaged
         },
-        status: "IN_PROGRESS",
+        status: "IN_PROGRESS"
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
+      router.push("/admin/dashboard");
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        alert(
-          "Error saving: " + (err.response?.data?.error || "Unknown error"),
-        );
+        alert("Error saving: " + (err.response?.data?.error || "Unknown error"));
       } else {
         alert("Error saving: An unexpected error occurred");
       }
@@ -149,11 +170,7 @@ export default function InspectionPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <Loader2
-          className="animate-spin"
-          size={40}
-          style={{ color: themeColors.primary }}
-        />
+        <Loader2 className="animate-spin" size={40} style={{ color: themeColors.primary }} />
         <p className="font-medium text-gray-500">Loading inspection form...</p>
       </div>
     );
@@ -166,257 +183,127 @@ export default function InspectionPage() {
           <AlertCircle size={48} className="text-red-500 mx-auto" />
           <h2 className="text-xl font-bold text-red-700">Error</h2>
           <p className="text-red-600">{error || "Data not found"}</p>
-          <button
-            onClick={() => router.back()}
-            className="px-6 py-2 bg-white border-2 border-red-200 rounded-xl font-bold text-red-600 hover:bg-red-50 transition"
-          >
-            Go Back
-          </button>
+          <button onClick={() => router.back()} className="px-6 py-2 bg-white border-2 border-red-200 rounded-xl font-bold text-red-600">Go Back</button>
         </div>
       </div>
     );
   }
 
-  const checklistItems = [
-    { key: "bodyAndFrame", label: "Body & Frame", icon: <Bike size={18} /> },
-    { key: "tyresAndWheels", label: "Tyres & Wheels", icon: <Gauge size={18} /> },
-    { key: "batteryAndCables", label: "Battery & Cables", icon: <AlertCircle size={18} /> },
-    { key: "lightsAndIndicators", label: "Lights & Indicators", icon: <AlertCircle size={18} /> },
-    { key: "brakes", label: "Brakes System", icon: <Gauge size={18} /> },
-  ];
-
   return (
-    <div className="w-full max-w-full mx-auto p-2 space-y-8 pb-20">
-      {/* Top Navigation */}
+    <div className="w-full max-w-3xl mx-auto p-4 md:p-8 space-y-10 pb-20">
+      {/* Header */}
       <div className="flex items-center gap-4">
-        <button
-          onClick={() => router.push("/admin/dashboard")}
-          className="p-2 hover:bg-gray-100 rounded-xl transition border-2"
-          style={{ borderColor: themeColors.border }}
-        >
+        <button onClick={() => router.push("/admin/dashboard")} className="p-2 hover:bg-gray-100 rounded-xl transition border-2" style={{ borderColor: themeColors.border }}>
           <ChevronLeft size={20} />
         </button>
         <div>
-          <h1
-            className="text-2xl font-black"
-            style={{ color: themeColors.textPrimary }}
-          >
-            Vehicle Inspection
-          </h1>
-          <p className="text-sm font-medium text-gray-400">
-            Job Card:{" "}
-            <span className="text-gray-600">#{jobCard.jobCardId}</span>
-          </p>
+          <h1 className="text-2xl font-black" style={{ color: themeColors.textPrimary }}>Complete Inspection</h1>
+          <p className="text-sm text-gray-400 font-medium">Job Card: #{jobCard.jobCardId}</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Vehicle Details Summary */}
-        <div className="lg:col-span-1 space-y-6">
-          <div
-            className="p-6 rounded-2xl border-2 space-y-6 sticky top-24"
-            style={{
-              borderColor: themeColors.border,
-              backgroundColor: themeColors.cardBackground,
-            }}
-          >
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-2xl bg-red-50 text-red-500 border-2 border-red-100">
-                <Bike size={32} />
-              </div>
-              <div>
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                  In Service
-                </p>
-                <h3
-                  className="text-xl font-black"
-                  style={{ color: themeColors.textPrimary }}
-                >
-                  {vehicle.vehicleId}
-                </h3>
-              </div>
-            </div>
-
-            <div
-              className="space-y-4 pt-4 border-t"
-              style={{ borderColor: themeColors.border }}
-            >
-              <div>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">
-                  Model Name
-                </p>
-                <p
-                  className="font-bold"
-                  style={{ color: themeColors.textPrimary }}
-                >
-                  {vehicle.modelName}
-                </p>
-              </div>
-              <div>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">
-                  Current Odometer
-                </p>
-                <div className="flex items-center gap-2">
-                  <Gauge size={16} className="text-gray-400" />
-                  <p
-                    className="font-black text-lg"
-                    style={{ color: themeColors.primary }}
-                  >
-                    {jobCard.inspection.odometer.toLocaleString()}{" "}
-                    <span className="text-[10px] uppercase">KM</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div
-              className="pt-4 border-t"
-              style={{ borderColor: themeColors.border }}
-            >
-              <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600 border border-emerald-100">
-                Stage: Inspection
-              </span>
-            </div>
+      {/* Vehicle Summary Card */}
+      <div className="p-6 rounded-3xl border-2 space-y-4" style={{ borderColor: themeColors.border, backgroundColor: themeColors.cardBackground }}>
+        <div className="flex items-center gap-4 pb-4 border-b" style={{ borderColor: themeColors.border }}>
+          <div className="p-3 rounded-2xl bg-red-50 text-red-500 border-2 border-red-100"><Bike size={32} /></div>
+          <div>
+            <h3 className="text-xl font-black" style={{ color: themeColors.textPrimary }}>{vehicle.vehicleId}</h3>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{vehicle.modelName}</p>
           </div>
         </div>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Entry Odometer</p>
+            <p className="font-black text-lg" style={{ color: themeColors.primary }}>{jobCard.inspection.odometer.toLocaleString()} <span className="text-[10px]">KM</span></p>
+          </div>
+          <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600 border border-emerald-100">Stage: Inspection</span>
+        </div>
+      </div>
 
-        {/* Right Column: Inspection Form */}
-        <div className="lg:col-span-2 space-y-6">
-          <div
-            className="p-8 rounded-3xl border-2 space-y-8"
-            style={{
-              borderColor: themeColors.border,
-              backgroundColor: themeColors.cardBackground,
-            }}
-          >
-            <div className="flex items-center gap-3">
-              <ClipboardCheck className="text-red-500" size={28} />
-              <h2
-                className="text-xl font-black"
-                style={{ color: themeColors.textPrimary }}
-              >
-                Inspection Checklist
-              </h2>
-            </div>
+      {/* Inspection Checklist */}
+      <div className="space-y-6">
+        <div className="flex items-center gap-3 mb-2">
+          <ClipboardCheck className="text-red-500" size={24} />
+          <h2 className="text-xl font-black" style={{ color: themeColors.textPrimary }}>Detailed Checklist</h2>
+        </div>
 
-            {/* Checklist Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {checklistItems.map((item) => (
-                <div 
-                  key={item.key}
-                  className="flex items-center justify-between p-4 rounded-2xl border-2 transition-all"
-                  style={{ borderColor: themeColors.border }}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${checklist[item.key as keyof typeof checklist] === "DAMAGED" ? "bg-red-50 text-red-500" : "bg-emerald-50 text-emerald-500"}`}>
-                      {item.icon}
-                    </div>
-                    <span className="font-bold text-sm" style={{ color: themeColors.textPrimary }}>{item.label}</span>
-                  </div>
+        {INSPECTION_ITEMS.map((item) => {
+          const state = checklist[item.id];
+          return (
+            <div key={item.id} className="p-6 rounded-3xl border-2 space-y-6 transition-all" style={{ borderColor: themeColors.border, backgroundColor: themeColors.cardBackground }}>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-xl bg-gray-50 text-gray-400 border">{item.icon}</div>
+                  <span className="font-black text-gray-800 uppercase tracking-wide text-sm">{item.label}</span>
+                </div>
+                
+                {/* Status Selection (Custom Radios) */}
+                <div className="flex items-center gap-3">
                   <button 
-                    onClick={() => toggleChecklistItem(item.key as keyof typeof checklist)}
-                    className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition border-2 ${
-                      checklist[item.key as keyof typeof checklist] === "OK"
-                      ? "bg-emerald-50 border-emerald-200 text-emerald-600"
-                      : "bg-red-50 border-red-200 text-red-600"
-                    }`}
+                    onClick={() => updateItemStatus(item.id, "OK")}
+                    className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest transition border-2 ${state.status === "OK" ? "bg-emerald-50 border-emerald-500 text-emerald-600" : "bg-white border-gray-100 text-gray-400 hover:border-gray-200"}`}
                   >
-                    {checklist[item.key as keyof typeof checklist]}
+                    {state.status === "OK" ? <CheckCircle size={16} /> : <Circle size={16} />}
+                    OK
+                  </button>
+                  <button 
+                    onClick={() => updateItemStatus(item.id, "DAMAGED")}
+                    className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest transition border-2 ${state.status === "DAMAGED" ? "bg-red-50 border-red-500 text-red-600" : "bg-white border-gray-100 text-gray-400 hover:border-gray-200"}`}
+                  >
+                    {state.status === "DAMAGED" ? <AlertTriangle size={16} /> : <Circle size={16} />}
+                    Damaged
                   </button>
                 </div>
-              ))}
-            </div>
-
-            {/* Findings Field */}
-            <div className="space-y-2">
-              <label className="text-xs font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
-                <ClipboardCheck size={16} />
-                Visual Inspection & Findings
-              </label>
-              <textarea
-                placeholder="Describe any visible scratches, dents, or mechanical issues..."
-                className="w-full px-6 py-4 rounded-2xl border-2 min-h-[140px] transition focus:outline-none focus:border-red-400"
-                style={{ borderColor: themeColors.border }}
-                value={findings}
-                onChange={(e) => setFindings(e.target.value)}
-              />
-            </div>
-
-            {/* Damage Status */}
-            <div
-              className="flex items-center gap-4 p-6 rounded-2xl border-2"
-              style={{ borderColor: themeColors.border }}
-            >
-              <div
-                className={`p-3 rounded-xl transition ${isDamaged ? "bg-red-500 text-white" : "bg-gray-100 text-gray-400"}`}
-              >
-                <AlertCircle size={24} />
               </div>
-              <div className="flex-1">
-                <h4
-                  className="font-bold text-sm"
-                  style={{ color: themeColors.textPrimary }}
-                >
-                  Vehicle Damaged?
-                </h4>
-                <p className="text-xs text-gray-400">
-                  Mark if any significant damage is found that requires repair.
-                </p>
-              </div>
-              <button
-                onClick={() => setIsDamaged(!isDamaged)}
-                className={`px-6 py-2 rounded-xl font-black text-xs uppercase tracking-widest transition border-2 ${
-                  isDamaged
-                    ? "bg-red-50 border-red-500 text-red-500"
-                    : "bg-white border-gray-200 text-gray-400 hover:border-gray-300"
-                }`}
-              >
-                {isDamaged ? "Yes, Damaged" : "No Damage"}
-              </button>
-            </div>
 
-            {/* Photos (Placeholder for now) */}
-            <div className="space-y-4">
-              <label className="text-xs font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
-                <Camera size={16} />
-                Vehicle Photos
-              </label>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="aspect-square rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-gray-300 hover:border-red-200 hover:text-red-300 transition cursor-pointer">
-                  <Plus size={24} />
-                  <span className="text-[10px] font-bold mt-2">Add Photo</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div
-              className="flex items-center justify-end gap-4 pt-8 border-t"
-              style={{ borderColor: themeColors.border }}
-            >
-              {saved && (
-                <div className="flex items-center gap-2 text-emerald-500 font-bold text-sm animate-in fade-in slide-in-from-right-4">
-                  <CheckCircle2 size={18} />
-                  Changes Saved
+              {/* Conditional Fields: Notes & Photos */}
+              {state.status === "DAMAGED" && (
+                <div className="space-y-4 pt-6 border-t animate-in fade-in slide-in-from-top-4 duration-300" style={{ borderColor: themeColors.border }}>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                      <ClipboardCheck size={14} /> Damage Notes (Required)
+                    </label>
+                    <textarea 
+                      placeholder={`Explain damage for ${item.label}...`}
+                      className="w-full px-5 py-4 rounded-2xl border-2 min-h-[100px] transition focus:outline-none focus:border-red-400 bg-gray-50/50"
+                      style={{ borderColor: themeColors.border }}
+                      value={state.notes}
+                      onChange={(e) => updateItemNotes(item.id, e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                      <Camera size={14} /> Damage Photos (Required)
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <div className="w-20 h-20 rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-gray-300 hover:border-red-200 hover:text-red-300 transition cursor-pointer">
+                        <Plus size={20} />
+                      </div>
+                      <p className="text-[10px] text-gray-400 font-bold italic">No photos uploaded yet</p>
+                    </div>
+                  </div>
                 </div>
               )}
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                className="px-10 py-4 rounded-2xl text-white font-black uppercase tracking-widest transition hover:opacity-90 active:scale-95 flex items-center gap-3"
-                style={{ backgroundColor: themeColors.primary }}
-              >
-                {saving ? (
-                  <Loader2 size={20} className="animate-spin" />
-                ) : (
-                  <>
-                    <Save size={20} /> Save Progress
-                  </>
-                )}
-              </button>
             </div>
+          );
+        })}
+      </div>
+
+      {/* Submission */}
+      <div className="flex flex-col items-center gap-6 pt-10 border-t" style={{ borderColor: themeColors.border }}>
+        {saved && (
+          <div className="flex items-center gap-2 text-emerald-500 font-black text-sm uppercase tracking-widest animate-in fade-in zoom-in">
+            <CheckCircle2 size={20} /> Inspection Submitted Successfully
           </div>
-        </div>
+        )}
+        <button 
+          onClick={handleSave}
+          disabled={saving}
+          className="w-full py-5 rounded-3xl text-white font-black uppercase tracking-widest transition hover:opacity-95 active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-50"
+          style={{ backgroundColor: themeColors.primary }}
+        >
+          {saving ? <Loader2 size={24} className="animate-spin" /> : <><Save size={24} /> Submit Inspection Result</>}
+        </button>
       </div>
     </div>
   );

@@ -1,5 +1,11 @@
 import mongoose, { Schema, Document } from "mongoose";
 
+export interface IChecklistItem {
+  status: "OK" | "DAMAGED" | null;
+  notes?: string;
+  photos?: string[];
+}
+
 export interface IJobCard extends Document {
   jobCardId: string;
   vehicleId: string;
@@ -8,15 +14,13 @@ export interface IJobCard extends Document {
   inspection: {
     odometer: number;
     checklist: {
-      bodyAndFrame: "OK" | "DAMAGED";
-      tyresAndWheels: "OK" | "DAMAGED";
-      batteryAndCables: "OK" | "DAMAGED";
-      lightsAndIndicators: "OK" | "DAMAGED";
-      brakes: "OK" | "DAMAGED";
+      bodyAndFrame: IChecklistItem;
+      tyresAndWheels: IChecklistItem;
+      batteryAndCables: IChecklistItem;
+      lightsAndIndicators: IChecklistItem;
+      brakes: IChecklistItem;
     };
-    findings?: string;
-    photos: string[];
-    isDamaged: boolean; // derived
+    isDamaged: boolean;
   };
 
   repairDetails: {
@@ -32,6 +36,12 @@ export interface IJobCard extends Document {
   status: "OPEN" | "IN_PROGRESS" | "CLOSED";
 }
 
+const ChecklistItemSchema = new Schema({
+  status: { type: String, enum: ["OK", "DAMAGED", null], default: null },
+  notes: { type: String },
+  photos: [{ type: String }],
+}, { _id: false });
+
 const JobCardSchema: Schema = new Schema(
   {
     jobCardId: { type: String, required: true, unique: true, index: true },
@@ -40,39 +50,13 @@ const JobCardSchema: Schema = new Schema(
 
     inspection: {
       odometer: { type: Number, required: true },
-
       checklist: {
-        bodyAndFrame: {
-          type: String,
-          enum: ["OK", "DAMAGED"],
-          default: "OK",
-        },
-        tyresAndWheels: {
-          type: String,
-          enum: ["OK", "DAMAGED"],
-          default: "OK",
-        },
-        batteryAndCables: {
-          type: String,
-          enum: ["OK", "DAMAGED"],
-          default: "OK",
-        },
-        lightsAndIndicators: {
-          type: String,
-          enum: ["OK", "DAMAGED"],
-          default: "OK",
-        },
-        brakes: {
-          type: String,
-          enum: ["OK", "DAMAGED"],
-          default: "OK",
-        },
+        bodyAndFrame: { type: ChecklistItemSchema, default: () => ({}) },
+        tyresAndWheels: { type: ChecklistItemSchema, default: () => ({}) },
+        batteryAndCables: { type: ChecklistItemSchema, default: () => ({}) },
+        lightsAndIndicators: { type: ChecklistItemSchema, default: () => ({}) },
+        brakes: { type: ChecklistItemSchema, default: () => ({}) },
       },
-
-      findings: { type: String },
-      photos: [{ type: String }],
-
-      // ⚡ IMPORTANT: auto-calculate
       isDamaged: { type: Boolean, default: false },
     },
 

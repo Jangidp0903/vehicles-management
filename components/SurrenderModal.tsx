@@ -233,7 +233,8 @@ const SurrenderModal: React.FC<SurrenderModalProps> = ({ isOpen, onClose }) => {
                     ) : (
                       <button 
                         onClick={handleProceedToInspection}
-                        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-white font-bold transition hover:opacity-90 active:scale-95"
+                        disabled={!newOdometer || isNaN(Number(newOdometer))}
+                        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-white font-bold transition hover:opacity-90 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:scale-100"
                         style={{ backgroundColor: themeColors.primary }}
                       >
                         Proceed to Inspection

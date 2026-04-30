@@ -28,7 +28,10 @@ export default function VehiclesPage() {
         setLoading(true);
         const res = await axios.get("/api/vehicles");
         if (res.data.success) {
-          setVehicles(res.data.data);
+          const sortedVehicles = res.data.data.sort((a: Vehicle, b: Vehicle) => 
+            a.vehicleId.localeCompare(b.vehicleId, undefined, { numeric: true, sensitivity: 'base' })
+          );
+          setVehicles(sortedVehicles);
         }
       } catch (error) {
         console.error("Error fetching vehicles:", error);
