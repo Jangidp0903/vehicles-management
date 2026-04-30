@@ -4,10 +4,6 @@ import axios from "axios";
 import {
   Search,
   Loader2,
-  Plus,
-  Filter,
-  MoreVertical,
-  ChevronRight,
   Bike,
 } from "lucide-react";
 import { themeColors } from "@/lib/themeColors";
@@ -27,22 +23,22 @@ export default function VehiclesPage() {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get("/api/vehicles");
+        if (res.data.success) {
+          setVehicles(res.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching vehicles:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchVehicles();
   }, []);
-
-  const fetchVehicles = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get("/api/vehicles");
-      if (res.data.success) {
-        setVehicles(res.data.data);
-      }
-    } catch (error) {
-      console.error("Error fetching vehicles:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const filteredVehicles = vehicles.filter(
     (v) =>
@@ -53,17 +49,22 @@ export default function VehiclesPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "AVAILABLE":
-        return "#2ECC71";
+        return "#16A34A";
+
       case "RENTED":
-        return "#3498DB";
+        return "#2563EB";
+
       case "DAMAGED":
-        return "#E74C3C";
+        return "#DC2626";
+
       case "UNDER_REPAIR":
-        return "#F39C12";
+        return "#D97706";
+
       case "UNDER_INSPECTION":
-        return "#9B59B6";
+        return "#0EA5A4";
+
       default:
-        return themeColors.textSecondary;
+        return "#6B7280";
     }
   };
 

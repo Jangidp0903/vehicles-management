@@ -2,22 +2,33 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IJobCard extends Document {
   jobCardId: string;
-  vehicleId: string; // Linked to Vehicle.vehicleId
-  technicianId?: string; // Linked to Technician.empId
+  vehicleId: string;
+  technicianId?: string;
+
   inspection: {
     odometer: number;
-    findings: string;
+    checklist: {
+      bodyAndFrame: "OK" | "DAMAGED";
+      tyresAndWheels: "OK" | "DAMAGED";
+      batteryAndCables: "OK" | "DAMAGED";
+      lightsAndIndicators: "OK" | "DAMAGED";
+      brakes: "OK" | "DAMAGED";
+    };
+    findings?: string;
     photos: string[];
-    isDamaged: boolean;
+    isDamaged: boolean; // derived
   };
+
   repairDetails: {
     parts: { partName: string; price: number }[];
     estimatedCost: number;
   };
+
   closure: {
     finalCost: number;
     closedAt?: Date;
   };
+
   status: "OPEN" | "IN_PROGRESS" | "CLOSED";
 }
 
@@ -27,15 +38,44 @@ const JobCardSchema: Schema = new Schema(
     vehicleId: { type: String, required: true },
     technicianId: { type: String },
 
-    // Stage 2: Inspection Data
     inspection: {
-      odometer: { type: Number },
+      odometer: { type: Number, required: true },
+
+      checklist: {
+        bodyAndFrame: {
+          type: String,
+          enum: ["OK", "DAMAGED"],
+          default: "OK",
+        },
+        tyresAndWheels: {
+          type: String,
+          enum: ["OK", "DAMAGED"],
+          default: "OK",
+        },
+        batteryAndCables: {
+          type: String,
+          enum: ["OK", "DAMAGED"],
+          default: "OK",
+        },
+        lightsAndIndicators: {
+          type: String,
+          enum: ["OK", "DAMAGED"],
+          default: "OK",
+        },
+        brakes: {
+          type: String,
+          enum: ["OK", "DAMAGED"],
+          default: "OK",
+        },
+      },
+
       findings: { type: String },
       photos: [{ type: String }],
+
+      // ⚡ IMPORTANT: auto-calculate
       isDamaged: { type: Boolean, default: false },
     },
 
-    // Stage 3: Repair & Parts
     repairDetails: {
       parts: [
         {
@@ -46,7 +86,6 @@ const JobCardSchema: Schema = new Schema(
       estimatedCost: { type: Number, default: 0 },
     },
 
-    // Stage 4: Closure Data
     closure: {
       finalCost: { type: Number, default: 0 },
       closedAt: { type: Date },

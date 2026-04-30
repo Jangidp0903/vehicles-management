@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { usePathname } from "next/navigation";
-import { Settings, X, LayoutDashboard, Bike, Users } from "lucide-react";
+import { X, LayoutDashboard, Bike } from "lucide-react";
 import Link from "next/link";
 import { themeColors } from "@/lib/themeColors";
 

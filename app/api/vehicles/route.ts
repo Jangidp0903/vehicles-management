@@ -11,12 +11,12 @@ export async function GET() {
       success: true,
       data: vehicles,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error fetching vehicles:", error);
     return NextResponse.json(
       {
         success: false,
-        error: error.message || "Failed to fetch vehicles",
+        error: (error as Error).message || "Failed to fetch vehicles",
       },
       { status: 500 }
     );
