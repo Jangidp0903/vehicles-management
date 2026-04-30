@@ -31,15 +31,7 @@ export default function TechJobsPage() {
   const [loading, setLoading] = useState(true);
   const { role, technicianId } = useRole();
 
-  useEffect(() => {
-    if (role === "TECHNICIAN" && technicianId) {
-      fetchTechJobs();
-    } else {
-      setLoading(false);
-    }
-  }, [role, technicianId]);
-
-  const fetchTechJobs = async () => {
+  const fetchTechJobs = React.useCallback(async () => {
     try {
       setLoading(true);
       const res = await axios.get(`/api/job-cards/technician/${technicianId}`);
@@ -51,7 +43,17 @@ export default function TechJobsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [technicianId]);
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      if (role === "TECHNICIAN" && technicianId) {
+        fetchTechJobs();
+      } else {
+        setLoading(false);
+      }
+    });
+  }, [role, technicianId, fetchTechJobs]);
 
   if (role !== "TECHNICIAN") {
     return (

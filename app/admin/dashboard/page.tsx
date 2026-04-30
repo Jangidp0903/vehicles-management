@@ -35,11 +35,7 @@ export default function Dashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchStats();
-  }, []);
-
-  const fetchStats = async () => {
+  const fetchStats = React.useCallback(async () => {
     try {
       setLoading(true);
       const res = await axios.get("/api/dashboard/stats");
@@ -51,7 +47,13 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      fetchStats();
+    });
+  }, [fetchStats]);
 
   const statConfig = [
     {

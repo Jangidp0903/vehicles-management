@@ -5,8 +5,6 @@ import {
   User, 
   CheckSquare, 
   Square, 
-  Plus, 
-  Minus, 
   Calculator, 
   Loader2, 
   AlertCircle,
@@ -48,7 +46,6 @@ const RepairAssignmentModal: React.FC<RepairAssignmentModalProps> = ({
   isOpen,
   onClose,
   jobCardId,
-  vehicleId,
   damagedItems,
   onSuccess
 }) => {
@@ -60,14 +57,7 @@ const RepairAssignmentModal: React.FC<RepairAssignmentModalProps> = ({
   const [fetchingTechs, setFetchingTechs] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (isOpen) {
-      fetchTechnicians();
-      setSelectedParts(damagedItems);
-    }
-  }, [isOpen, damagedItems]);
-
-  const fetchTechnicians = async () => {
+  const fetchTechnicians = React.useCallback(async () => {
     setFetchingTechs(true);
     try {
       const res = await axios.get("/api/technicians");
@@ -79,7 +69,17 @@ const RepairAssignmentModal: React.FC<RepairAssignmentModalProps> = ({
     } finally {
       setFetchingTechs(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      // Use queueMicrotask to avoid synchronous setState warning
+      queueMicrotask(() => {
+        fetchTechnicians();
+        setSelectedParts(damagedItems);
+      });
+    }
+  }, [isOpen, damagedItems, fetchTechnicians]);
 
   const togglePart = (id: string) => {
     setSelectedParts(prev => 
@@ -126,10 +126,6 @@ const RepairAssignmentModal: React.FC<RepairAssignmentModalProps> = ({
         status: "IN_PROGRESS"
       });
 
-      // Note: The backend API already handles Vehicle status update to DAMAGED if isDamaged is true.
-      // But for "UNDER_REPAIR", we need to ensure it's set.
-      // I'll update the backend API to handle "UNDER_REPAIR" if technician is assigned.
-      
       onSuccess();
     } catch (err) {
       if (axios.isAxiosError(err)) {

@@ -191,11 +191,12 @@ export default function InspectionPage() {
       });
 
       hideNotification();
+      setSaved(true);
       if (isDamaged) {
         setIsRepairModalOpen(true);
       } else {
         showSuccess("Success", "Inspection completed successfully.");
-        router.push("/admin/dashboard");
+        setTimeout(() => router.push("/admin/dashboard"), 2000);
       }
     } catch (err) {
       console.error("Save error:", err);

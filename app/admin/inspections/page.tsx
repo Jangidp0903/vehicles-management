@@ -8,7 +8,6 @@ import {
   ChevronRight, 
   Search,
   AlertCircle,
-  LayoutDashboard
 } from "lucide-react";
 import { themeColors } from "@/lib/themeColors";
 import { useRouter } from "next/navigation";
@@ -29,13 +28,7 @@ export default function OperatorInspectionsPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    if (role === "OPERATOR") {
-      fetchVehicles();
-    }
-  }, [role]);
-
-  const fetchVehicles = async () => {
+  const fetchVehicles = React.useCallback(async () => {
     try {
       setLoading(true);
       const res = await axios.get("/api/vehicles");
@@ -51,7 +44,15 @@ export default function OperatorInspectionsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (role === "OPERATOR") {
+      queueMicrotask(() => {
+        fetchVehicles();
+      });
+    }
+  }, [role, fetchVehicles]);
 
   const filteredVehicles = vehicles.filter(
     (v) =>

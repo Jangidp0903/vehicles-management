@@ -10,11 +10,8 @@ import {
   ChevronLeft,
   CheckCircle2,
   AlertCircle,
-  Clock,
   Camera,
-  IndianRupee,
   User,
-  Gauge,
 } from "lucide-react";
 import { themeColors } from "@/lib/themeColors";
 import { useRole } from "@/lib/RoleContext";
@@ -309,7 +306,7 @@ export default function JobCardDetailsPage() {
                     {item.notes && (
                       <div className="p-2 bg-red-50/50 rounded-lg border border-red-100">
                         <p className="text-[9px] font-bold text-red-600 italic">
-                          "{item.notes}"
+                          &quot;{item.notes}&quot;
                         </p>
                       </div>
                     )}
