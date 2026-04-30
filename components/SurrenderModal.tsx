@@ -111,29 +111,29 @@ const SurrenderModal: React.FC<SurrenderModalProps> = ({ isOpen, onClose }) => {
         style={{ border: `1px solid ${themeColors.border}` }}
       >
         {/* Modal Header */}
-        <div className="flex items-center justify-between p-6 border-b" style={{ borderColor: themeColors.border }}>
-          <h2 className="text-xl font-bold" style={{ color: themeColors.textPrimary }}>
+        <div className="flex items-center justify-between p-4 border-b" style={{ borderColor: themeColors.border }}>
+          <h2 className="text-lg font-bold" style={{ color: themeColors.textPrimary }}>
             Surrender Vehicle
           </h2>
           <button 
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-xl transition"
+            className="p-1.5 hover:bg-gray-100 rounded-lg transition"
           >
-            <X size={20} className="text-gray-500" />
+            <X size={18} className="text-gray-500" />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-6">
+        <div className="p-4">
           {!confirming ? (
-            <div className="space-y-6">
+            <div className="space-y-4">
               {/* Search Bar */}
               <form onSubmit={handleSearch} className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                 <input 
                   type="text"
-                  placeholder="Enter Vehicle ID (e.g. ZOM-EV-001)"
-                  className="w-full pl-10 pr-24 py-3 rounded-xl border-2 transition focus:outline-none"
+                  placeholder="Enter Vehicle ID..."
+                  className="w-full pl-10 pr-20 py-2 rounded-lg border-2 text-sm transition focus:outline-none"
                   style={{ 
                     borderColor: themeColors.border,
                     backgroundColor: "#FAFAFA"
@@ -145,10 +145,10 @@ const SurrenderModal: React.FC<SurrenderModalProps> = ({ isOpen, onClose }) => {
                 <button 
                   type="submit"
                   disabled={loading || !searchId.trim()}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 rounded-lg text-sm font-bold text-white transition disabled:opacity-50"
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 px-3 py-1 rounded-md text-[11px] font-bold text-white transition disabled:opacity-50"
                   style={{ backgroundColor: themeColors.primary }}
                 >
-                  {loading ? <Loader2 size={16} className="animate-spin" /> : "Search"}
+                  {loading ? <Loader2 size={14} className="animate-spin" /> : "Search"}
                 </button>
               </form>
 

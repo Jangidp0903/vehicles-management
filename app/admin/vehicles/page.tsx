@@ -74,31 +74,31 @@ export default function VehiclesPage() {
   return (
     <div className="w-full p-2">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
         <div>
           <h1
-            className="text-2xl font-bold"
+            className="text-xl font-bold"
             style={{ color: themeColors.textPrimary }}
           >
             Vehicles Inventory
           </h1>
-          <p className="text-sm" style={{ color: themeColors.textSecondary }}>
+          <p className="text-xs" style={{ color: themeColors.textSecondary }}>
             Manage and track all fleet vehicles from here.
           </p>
         </div>
       </div>
 
       {/* Search Section */}
-      <div className="flex flex-col md:flex-row gap-4 mb-6">
+      <div className="flex flex-col md:flex-row gap-4 mb-4">
         <div className="relative flex-1">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-            size={18}
+            size={16}
           />
           <input
             type="text"
             placeholder="Search by Vehicle ID or Model..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 transition focus:outline-none"
+            className="w-full pl-9 pr-4 py-1.5 rounded-lg border-2 text-sm transition focus:outline-none"
             style={{
               borderColor: themeColors.border,
               backgroundColor: themeColors.cardBackground,
@@ -123,22 +123,22 @@ export default function VehiclesPage() {
               <tr
                 style={{
                   backgroundColor: "#FAFAFA",
-                  borderBottom: `2px solid ${themeColors.border}`,
+                  borderBottom: `1px solid ${themeColors.border}`,
                 }}
               >
-                <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500">
+                <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-gray-500">
                   Vehicle ID
                 </th>
-                <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500">
+                <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-gray-500">
                   Model Name
                 </th>
-                <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500">
+                <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-gray-500">
                   Status
                 </th>
-                <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500">
+                <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-gray-500">
                   Odometer
                 </th>
-                <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500">
+                <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-gray-500">
                   Added On
                 </th>
               </tr>
@@ -168,13 +168,13 @@ export default function VehiclesPage() {
                     key={vehicle._id}
                     className="hover:bg-gray-50 transition-colors group"
                   >
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-red-50 text-red-500">
-                          <Bike size={18} />
+                    <td className="px-4 py-2.5">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1.5 rounded-lg bg-red-50 text-red-500">
+                          <Bike size={14} />
                         </div>
                         <span
-                          className="font-bold text-sm"
+                          className="font-semibold text-xs"
                           style={{ color: themeColors.textPrimary }}
                         >
                           {vehicle.vehicleId}
@@ -182,14 +182,14 @@ export default function VehiclesPage() {
                       </div>
                     </td>
                     <td
-                      className="px-6 py-4 text-sm font-medium"
+                      className="px-4 py-2.5 text-xs font-medium"
                       style={{ color: themeColors.textSecondary }}
                     >
                       {vehicle.modelName}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-2.5">
                       <span
-                        className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide border"
+                        className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide border"
                         style={{
                           color: getStatusColor(vehicle.status),
                           borderColor: getStatusColor(vehicle.status) + "40",
@@ -201,14 +201,14 @@ export default function VehiclesPage() {
                       </span>
                     </td>
                     <td
-                      className="px-6 py-4 text-sm font-bold"
+                      className="px-4 py-2.5 text-xs font-bold"
                       style={{ color: themeColors.textPrimary }}
                     >
                       {vehicle.currentOdometer?.toLocaleString()}{" "}
-                      <span className="text-[10px] text-gray-400">KM</span>
+                      <span className="text-[9px] text-gray-400 font-medium">KM</span>
                     </td>
                     <td
-                      className="px-6 py-4 text-sm"
+                      className="px-4 py-2.5 text-[11px]"
                       style={{ color: themeColors.textSecondary }}
                     >
                       {new Date(vehicle.createdAt).toLocaleDateString("en-IN", {
