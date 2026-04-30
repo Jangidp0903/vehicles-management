@@ -21,6 +21,8 @@ import {
 import { themeColors } from "@/lib/themeColors";
 import RepairAssignmentModal from "@/components/RepairAssignmentModal";
 import { useNotification } from "@/lib/NotificationContext";
+import { useRole } from "@/lib/RoleContext";
+import AccessDenied from "@/components/AccessDenied";
 
 interface ChecklistItem {
   status: "OK" | "DAMAGED" | null;
@@ -72,8 +74,13 @@ const DEFAULT_CHECKLIST: Record<string, ChecklistItem> = {
 export default function InspectionPage() {
   const { vehicleId } = useParams();
   const router = useRouter();
+  const { role } = useRole();
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const { showSuccess, showError, showLoading, hideNotification } = useNotification();
+
+  if (role !== "OPERATOR") {
+    return <AccessDenied requiredRole="OPERATOR" />;
+  }
   
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
   const [jobCard, setJobCard] = useState<JobCard | null>(null);

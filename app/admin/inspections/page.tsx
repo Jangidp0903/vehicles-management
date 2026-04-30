@@ -12,6 +12,7 @@ import {
 import { themeColors } from "@/lib/themeColors";
 import { useRouter } from "next/navigation";
 import { useRole } from "@/lib/RoleContext";
+import AccessDenied from "@/components/AccessDenied";
 
 interface Vehicle {
   _id: string;
@@ -61,18 +62,7 @@ export default function OperatorInspectionsPage() {
   );
 
   if (role !== "OPERATOR") {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] p-4 text-center space-y-4">
-        <div className="p-4 rounded-full bg-red-50 text-red-500">
-          <AlertCircle size={40} />
-        </div>
-        <h1 className="text-xl font-bold text-gray-800">Access Restricted</h1>
-        <p className="text-sm text-gray-500 max-w-xs">
-          This page is only available in Operator View. Please switch your role
-          from the top header.
-        </p>
-      </div>
-    );
+    return <AccessDenied requiredRole="OPERATOR" />;
   }
 
   return (

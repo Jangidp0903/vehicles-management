@@ -13,6 +13,7 @@ import {
 import { themeColors } from "@/lib/themeColors";
 import { useRole } from "@/lib/RoleContext";
 import Link from "next/link";
+import AccessDenied from "@/components/AccessDenied";
 
 interface JobCard {
   _id: string;
@@ -56,18 +57,7 @@ export default function TechJobsPage() {
   }, [role, technicianId, fetchTechJobs]);
 
   if (role !== "TECHNICIAN") {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] p-4 text-center space-y-4">
-        <div className="p-4 rounded-full bg-red-50 text-red-500">
-          <AlertCircle size={40} />
-        </div>
-        <h1 className="text-xl font-bold text-gray-800">Access Restricted</h1>
-        <p className="text-sm text-gray-500 max-w-xs">
-          This page is only available in Technician View. Please switch your
-          view from the top header.
-        </p>
-      </div>
-    );
+    return <AccessDenied requiredRole="TECHNICIAN" />;
   }
 
   return (

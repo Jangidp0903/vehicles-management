@@ -16,6 +16,7 @@ import {
 import { themeColors } from "@/lib/themeColors";
 import { useRole } from "@/lib/RoleContext";
 import { useNotification } from "@/lib/NotificationContext";
+import AccessDenied from "@/components/AccessDenied";
 
 interface ChecklistItem {
   status: "OK" | "DAMAGED" | null;
@@ -59,6 +60,10 @@ export default function JobCardDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [completing, setCompleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  if (role !== "TECHNICIAN") {
+    return <AccessDenied requiredRole="TECHNICIAN" />;
+  }
 
   useEffect(() => {
     const fetchData = async () => {
