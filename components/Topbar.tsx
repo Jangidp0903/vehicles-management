@@ -164,23 +164,6 @@ const Topbar = ({
             </div>
           )}
         </div>
-
-        {/* Technician Selector (Only if Role is Technician) */}
-        {role === "TECHNICIAN" && technicians.length > 0 && (
-          <div className="hidden md:block">
-            <select
-              value={technicianId || ""}
-              onChange={(e) => setTechnicianId(e.target.value)}
-              className="bg-gray-50 border-2 border-gray-200 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-gray-600 outline-none focus:border-red-300 transition cursor-pointer"
-            >
-              {technicians.map((tech) => (
-                <option key={tech.empId} value={tech.empId}>
-                  {tech.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
       </div>
     </header>
   );
