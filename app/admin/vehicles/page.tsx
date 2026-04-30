@@ -1,11 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  Search,
-  Loader2,
-  Bike,
-} from "lucide-react";
+import { Search, Loader2, Bike } from "lucide-react";
 import { themeColors } from "@/lib/themeColors";
 import { useRole } from "@/lib/RoleContext";
 
@@ -30,8 +26,11 @@ export default function VehiclesPage() {
         setLoading(true);
         const res = await axios.get("/api/vehicles");
         if (res.data.success) {
-          const sortedVehicles = res.data.data.sort((a: Vehicle, b: Vehicle) => 
-            a.vehicleId.localeCompare(b.vehicleId, undefined, { numeric: true, sensitivity: 'base' })
+          const sortedVehicles = res.data.data.sort((a: Vehicle, b: Vehicle) =>
+            a.vehicleId.localeCompare(b.vehicleId, undefined, {
+              numeric: true,
+              sensitivity: "base",
+            }),
           );
           setVehicles(sortedVehicles);
         }
@@ -46,7 +45,7 @@ export default function VehiclesPage() {
   }, []);
 
   const filteredVehicles = vehicles
-    .filter(v => {
+    .filter((v) => {
       // Role-based filtering: Technicians only see vehicles under repair
       if (role === "TECHNICIAN") {
         return v.status === "UNDER_REPAIR";
@@ -77,7 +76,7 @@ export default function VehiclesPage() {
   };
 
   return (
-    <div className="w-full p-2">
+    <div className="w-full p-1">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
         <div>
@@ -88,8 +87,8 @@ export default function VehiclesPage() {
             {role === "TECHNICIAN" ? "Repair Queue" : "Vehicles Inventory"}
           </h1>
           <p className="text-xs" style={{ color: themeColors.textSecondary }}>
-            {role === "TECHNICIAN" 
-              ? "Showing all vehicles currently assigned for repair." 
+            {role === "TECHNICIAN"
+              ? "Showing all vehicles currently assigned for repair."
               : "Manage and track all fleet vehicles from here."}
           </p>
         </div>
@@ -213,7 +212,9 @@ export default function VehiclesPage() {
                       style={{ color: themeColors.textPrimary }}
                     >
                       {vehicle.currentOdometer?.toLocaleString()}{" "}
-                      <span className="text-[9px] text-gray-400 font-medium">KM</span>
+                      <span className="text-[9px] text-gray-400 font-medium">
+                        KM
+                      </span>
                     </td>
                     <td
                       className="px-4 py-2.5 text-[11px]"
@@ -233,7 +234,8 @@ export default function VehiclesPage() {
                     colSpan={5}
                     className="px-6 py-20 text-center text-gray-500"
                   >
-                    No vehicles found in {role === "TECHNICIAN" ? "repair queue" : "inventory"}.
+                    No vehicles found in{" "}
+                    {role === "TECHNICIAN" ? "repair queue" : "inventory"}.
                   </td>
                 </tr>
               )}
@@ -242,11 +244,20 @@ export default function VehiclesPage() {
         </div>
 
         {/* Mobile Card View */}
-        <div className="md:hidden divide-y" style={{ borderColor: themeColors.border }}>
+        <div
+          className="md:hidden divide-y"
+          style={{ borderColor: themeColors.border }}
+        >
           {loading ? (
             <div className="p-10 text-center flex flex-col items-center gap-3">
-              <Loader2 className="animate-spin" size={32} style={{ color: themeColors.primary }} />
-              <span className="text-sm font-medium text-gray-500">Loading...</span>
+              <Loader2
+                className="animate-spin"
+                size={32}
+                style={{ color: themeColors.primary }}
+              />
+              <span className="text-sm font-medium text-gray-500">
+                Loading...
+              </span>
             </div>
           ) : filteredVehicles.length > 0 ? (
             filteredVehicles.map((vehicle) => (
@@ -257,7 +268,10 @@ export default function VehiclesPage() {
                       <Bike size={18} />
                     </div>
                     <div>
-                      <p className="text-sm font-bold" style={{ color: themeColors.textPrimary }}>
+                      <p
+                        className="text-sm font-bold"
+                        style={{ color: themeColors.textPrimary }}
+                      >
                         {vehicle.vehicleId}
                       </p>
                       <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
@@ -276,16 +290,26 @@ export default function VehiclesPage() {
                     {vehicle.status.replace("_", " ")}
                   </span>
                 </div>
-                
-                <div className="flex items-center justify-between pt-2 border-t" style={{ borderColor: themeColors.border }}>
+
+                <div
+                  className="flex items-center justify-between pt-2 border-t"
+                  style={{ borderColor: themeColors.border }}
+                >
                   <div className="flex flex-col">
-                    <span className="text-[9px] font-bold text-gray-400 uppercase">Odometer</span>
-                    <span className="text-xs font-bold" style={{ color: themeColors.textPrimary }}>
+                    <span className="text-[9px] font-bold text-gray-400 uppercase">
+                      Odometer
+                    </span>
+                    <span
+                      className="text-xs font-bold"
+                      style={{ color: themeColors.textPrimary }}
+                    >
                       {vehicle.currentOdometer?.toLocaleString()} KM
                     </span>
                   </div>
                   <div className="flex flex-col text-right">
-                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Added On</span>
+                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">
+                      Added On
+                    </span>
                     <span className="text-xs font-medium text-gray-500">
                       {new Date(vehicle.createdAt).toLocaleDateString("en-IN", {
                         day: "2-digit",

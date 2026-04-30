@@ -1,11 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { 
-  ClipboardCheck, 
-  Loader2, 
-  Bike, 
-  ChevronRight, 
+import {
+  ClipboardCheck,
+  Loader2,
+  Bike,
+  ChevronRight,
   Search,
   AlertCircle,
 } from "lucide-react";
@@ -35,7 +35,7 @@ export default function OperatorInspectionsPage() {
       if (res.data.success) {
         // Filter only UNDER_INSPECTION vehicles
         const inspectionVehicles = res.data.data.filter(
-          (v: Vehicle) => v.status === "UNDER_INSPECTION"
+          (v: Vehicle) => v.status === "UNDER_INSPECTION",
         );
         setVehicles(inspectionVehicles);
       }
@@ -57,7 +57,7 @@ export default function OperatorInspectionsPage() {
   const filteredVehicles = vehicles.filter(
     (v) =>
       v.vehicleId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      v.modelName.toLowerCase().includes(searchTerm.toLowerCase())
+      v.modelName.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   if (role !== "OPERATOR") {
@@ -68,18 +68,22 @@ export default function OperatorInspectionsPage() {
         </div>
         <h1 className="text-xl font-bold text-gray-800">Access Restricted</h1>
         <p className="text-sm text-gray-500 max-w-xs">
-          This page is only available in Operator View. Please switch your role from the top header.
+          This page is only available in Operator View. Please switch your role
+          from the top header.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="w-full p-2 space-y-6">
+    <div className="w-full p-1 space-y-6">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold" style={{ color: themeColors.textPrimary }}>
+          <h1
+            className="text-xl font-bold"
+            style={{ color: themeColors.textPrimary }}
+          >
             Pending Inspections
           </h1>
           <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mt-1">
@@ -94,7 +98,10 @@ export default function OperatorInspectionsPage() {
 
       {/* Search & Filter */}
       <div className="relative max-w-md">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+        <Search
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+          size={16}
+        />
         <input
           type="text"
           placeholder="Search by Vehicle ID or Model..."
@@ -108,14 +115,18 @@ export default function OperatorInspectionsPage() {
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20 gap-3">
           <Loader2 className="animate-spin text-teal-500" size={32} />
-          <span className="text-sm font-medium text-gray-500">Loading inspection queue...</span>
+          <span className="text-sm font-medium text-gray-500">
+            Loading inspection queue...
+          </span>
         </div>
       ) : filteredVehicles.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredVehicles.map((vehicle) => (
             <div
               key={vehicle._id}
-              onClick={() => router.push(`/admin/inspection/${vehicle.vehicleId}`)}
+              onClick={() =>
+                router.push(`/admin/inspection/${vehicle.vehicleId}`)
+              }
               className="bg-white rounded-2xl border-2 p-5 space-y-4 hover:border-teal-400 transition-colors cursor-pointer group"
               style={{ borderColor: themeColors.border }}
             >
@@ -125,7 +136,9 @@ export default function OperatorInspectionsPage() {
                     <Bike size={20} />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-gray-900">{vehicle.vehicleId}</h3>
+                    <h3 className="text-sm font-bold text-gray-900">
+                      {vehicle.vehicleId}
+                    </h3>
                     <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
                       {vehicle.modelName}
                     </p>
@@ -136,10 +149,15 @@ export default function OperatorInspectionsPage() {
                 </div>
               </div>
 
-              <div className="pt-2 border-t flex items-center justify-between" style={{ borderColor: themeColors.border }}>
+              <div
+                className="pt-2 border-t flex items-center justify-between"
+                style={{ borderColor: themeColors.border }}
+              >
                 <div className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
-                  <span className="text-[10px] font-bold text-teal-600 uppercase tracking-wider">Awaiting Report</span>
+                  <span className="text-[10px] font-bold text-teal-600 uppercase tracking-wider">
+                    Awaiting Report
+                  </span>
                 </div>
                 <div className="text-[10px] font-bold text-gray-500">
                   {vehicle.currentOdometer.toLocaleString()} KM
@@ -154,7 +172,9 @@ export default function OperatorInspectionsPage() {
           <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">
             Inspection Queue is Empty
           </p>
-          <p className="text-[10px] text-gray-400 mt-1">No vehicles are currently marked as under inspection.</p>
+          <p className="text-[10px] text-gray-400 mt-1">
+            No vehicles are currently marked as under inspection.
+          </p>
         </div>
       )}
     </div>
