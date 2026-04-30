@@ -27,10 +27,10 @@ export async function PATCH(
     }
 
     // Sync status logic
-    let vehicleStatus: string = updatedJobCard.inspection.isDamaged ? "DAMAGED" : "AVAILABLE";
+    let vehicleStatus: string = updatedJobCard.inspection.isDamaged ? "DAMAGED" : "RFD";
 
     if (updatedJobCard.status === "CLOSED") {
-      vehicleStatus = "AVAILABLE";
+      vehicleStatus = "RFD";
       // Mark technician as available again when job is closed
       if (updatedJobCard.technicianId) {
         await Technician.findOneAndUpdate(

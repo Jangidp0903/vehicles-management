@@ -103,7 +103,7 @@ export default function JobCardDetailsPage() {
       await axios.patch(`/api/job-cards/id/${jobCardId}`, {
         status: "CLOSED",
       });
-      showSuccess("Repair Completed", "Vehicle is now AVAILABLE and cleared for operations.");
+      showSuccess("Repair Completed", "Vehicle is now RFD and cleared for operations.");
       setTimeout(() => {
         hideNotification();
         router.push("/admin/tech-jobs");

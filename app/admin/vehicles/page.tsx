@@ -61,7 +61,7 @@ export default function VehiclesPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "AVAILABLE":
+      case "RFD":
         return "#16A34A";
       case "RENTED":
         return "#2563EB";
