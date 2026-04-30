@@ -116,7 +116,7 @@ export default function VehiclesPage() {
         </div>
       </div>
 
-      {/* Table Container */}
+      {/* Vehicles View */}
       <div
         className="w-full overflow-hidden rounded-2xl border-2"
         style={{
@@ -124,7 +124,8 @@ export default function VehiclesPage() {
           backgroundColor: themeColors.cardBackground,
         }}
       >
-        <div className="overflow-x-auto">
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr
@@ -238,6 +239,69 @@ export default function VehiclesPage() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden divide-y" style={{ borderColor: themeColors.border }}>
+          {loading ? (
+            <div className="p-10 text-center flex flex-col items-center gap-3">
+              <Loader2 className="animate-spin" size={32} style={{ color: themeColors.primary }} />
+              <span className="text-sm font-medium text-gray-500">Loading...</span>
+            </div>
+          ) : filteredVehicles.length > 0 ? (
+            filteredVehicles.map((vehicle) => (
+              <div key={vehicle._id} className="p-4 space-y-3">
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-xl bg-red-50 text-red-500 border">
+                      <Bike size={18} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold" style={{ color: themeColors.textPrimary }}>
+                        {vehicle.vehicleId}
+                      </p>
+                      <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
+                        {vehicle.modelName}
+                      </p>
+                    </div>
+                  </div>
+                  <span
+                    className="px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest border"
+                    style={{
+                      color: getStatusColor(vehicle.status),
+                      borderColor: getStatusColor(vehicle.status) + "40",
+                      backgroundColor: getStatusColor(vehicle.status) + "10",
+                    }}
+                  >
+                    {vehicle.status.replace("_", " ")}
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between pt-2 border-t" style={{ borderColor: themeColors.border }}>
+                  <div className="flex flex-col">
+                    <span className="text-[9px] font-bold text-gray-400 uppercase">Odometer</span>
+                    <span className="text-xs font-bold" style={{ color: themeColors.textPrimary }}>
+                      {vehicle.currentOdometer?.toLocaleString()} KM
+                    </span>
+                  </div>
+                  <div className="flex flex-col text-right">
+                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Added On</span>
+                    <span className="text-xs font-medium text-gray-500">
+                      {new Date(vehicle.createdAt).toLocaleDateString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="p-10 text-center text-xs font-bold text-gray-400 uppercase tracking-widest">
+              No vehicles found
+            </div>
+          )}
         </div>
       </div>
     </div>

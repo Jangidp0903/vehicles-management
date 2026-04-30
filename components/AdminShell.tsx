@@ -45,10 +45,10 @@ export default function AdminShell({
           sidebarCollapsed={isCollapsed}
         />
         <main
-          className="flex-1 p-2 mt-16"
+          className="flex-1 p-3 sm:p-6 mt-16"
           style={{ backgroundColor: themeColors.background }}
         >
-          <div className="max-w-full mx-auto">{children}</div>
+          <div className="max-w-7xl mx-auto">{children}</div>
         </main>
       </div>
     </div>

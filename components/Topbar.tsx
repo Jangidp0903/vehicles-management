@@ -111,9 +111,9 @@ const Topbar = ({
         <div className="relative">
           <button
             onClick={() => setShowRoleDropdown(!showRoleDropdown)}
-            className="flex items-center space-x-2 sm:space-x-3 bg-gray-50 border-2 border-gray-200 rounded-xl px-2 sm:px-3 py-1 hover:bg-red-50 hover:border-red-300 text-gray-600 transition cursor-pointer"
+            className="flex items-center space-x-2 sm:space-x-3 bg-gray-50 border-2 border-gray-200 rounded-xl px-1.5 sm:px-3 py-1 hover:bg-red-50 hover:border-red-300 text-gray-600 transition cursor-pointer"
           >
-            <div className="hidden sm:block text-right">
+            <div className="hidden md:block text-right">
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                 Active View
               </p>
@@ -121,10 +121,15 @@ const Topbar = ({
                 {role === "OPERATOR" ? "Operator" : "Technician"}
               </p>
             </div>
+            <div className="md:hidden text-right">
+              <p className="text-[9px] font-black text-gray-800">
+                {role === "OPERATOR" ? "OP" : "TECH"}
+              </p>
+            </div>
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-500 border-2 border-red-600 rounded-xl flex items-center justify-center">
               <User size={18} className="text-white" />
             </div>
-            <ChevronDown size={14} className="text-gray-400" />
+            <ChevronDown size={12} className="text-gray-400" />
           </button>
 
           {showRoleDropdown && (
