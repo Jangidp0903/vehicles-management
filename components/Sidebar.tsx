@@ -70,7 +70,7 @@ const Sidebar = ({
               <Link
                 key={item.name}
                 href={item.path}
-                className={`relative flex items-center text-sm font-medium px-4 py-3 rounded-md transition-all duration-200 ${
+                className={`relative flex items-center text-sm font-medium px-4 py-3 rounded-md transition-all duration-200 cursor-pointer ${
                   isCollapsed ? "justify-center px-2" : ""
                 } ${isActive ? "font-semibold" : ""}`}
                 style={{

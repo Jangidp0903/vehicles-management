@@ -224,7 +224,7 @@ export default function InspectionPage() {
       <div className="flex items-center gap-3">
         <button
           onClick={() => router.push("/admin/dashboard")}
-          className="p-1.5 hover:bg-gray-100 rounded-lg transition border-2"
+          className="p-1.5 hover:bg-gray-100 rounded-lg transition border-2 cursor-pointer"
           style={{ borderColor: themeColors.border }}
         >
           <ChevronLeft size={16} />
@@ -325,7 +325,7 @@ export default function InspectionPage() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => updateItemStatus(item.id, "OK")}
-                    className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-lg font-bold text-[10px] uppercase tracking-widest transition border-2 ${state.status === "OK" ? "bg-emerald-50 border-emerald-500 text-emerald-600" : "bg-white border-gray-100 text-gray-400 hover:border-gray-200"}`}
+                    className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-lg font-bold text-[10px] uppercase tracking-widest transition border-2 cursor-pointer ${state.status === "OK" ? "bg-emerald-50 border-emerald-500 text-emerald-600" : "bg-white border-gray-100 text-gray-400 hover:border-gray-200"}`}
                   >
                     {state.status === "OK" ? (
                       <CheckCircle size={14} />
@@ -336,7 +336,7 @@ export default function InspectionPage() {
                   </button>
                   <button
                     onClick={() => updateItemStatus(item.id, "DAMAGED")}
-                    className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-lg font-bold text-[10px] uppercase tracking-widest transition border-2 ${state.status === "DAMAGED" ? "bg-red-50 border-red-500 text-red-600" : "bg-white border-gray-100 text-gray-400 hover:border-gray-200"}`}
+                    className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-lg font-bold text-[10px] uppercase tracking-widest transition border-2 cursor-pointer ${state.status === "DAMAGED" ? "bg-red-50 border-red-500 text-red-600" : "bg-white border-gray-100 text-gray-400 hover:border-gray-200"}`}
                   >
                     {state.status === "DAMAGED" ? (
                       <AlertTriangle size={14} />
@@ -399,7 +399,7 @@ export default function InspectionPage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="w-full py-5 rounded-3xl text-white font-black uppercase tracking-widest transition hover:opacity-95 active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-50"
+          className="w-full py-5 rounded-3xl text-white font-black uppercase tracking-widest transition hover:opacity-95 active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-50 cursor-pointer"
           style={{ backgroundColor: themeColors.primary }}
         >
           {saving ? (

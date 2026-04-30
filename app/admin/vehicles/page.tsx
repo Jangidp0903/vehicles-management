@@ -166,7 +166,7 @@ export default function VehiclesPage() {
                 filteredVehicles.map((vehicle) => (
                   <tr
                     key={vehicle._id}
-                    className="hover:bg-gray-50 transition-colors group"
+                    className="hover:bg-gray-50 transition-colors group cursor-pointer"
                   >
                     <td className="px-4 py-2.5">
                       <div className="flex items-center gap-2">

@@ -37,7 +37,7 @@ export default function Dashboard() {
           {/* Surrender Vehicle Action Card */}
           <button
             onClick={() => setIsModalOpen(true)}
-            className="group relative flex flex-col items-start p-4 rounded-xl border-2 transition-all hover:border-red-400 text-left bg-white"
+            className="group relative flex flex-col items-start p-4 rounded-xl border-2 transition-all hover:border-red-400 text-left bg-white cursor-pointer"
             style={{ borderColor: themeColors.border }}
           >
             <div className="p-2.5 rounded-lg bg-red-50 text-red-500 mb-3 transition-colors group-hover:bg-red-500 group-hover:text-white">
