@@ -111,29 +111,29 @@ const SurrenderModal: React.FC<SurrenderModalProps> = ({ isOpen, onClose }) => {
         style={{ border: `1px solid ${themeColors.border}` }}
       >
         {/* Modal Header */}
-        <div className="flex items-center justify-between p-4 border-b" style={{ borderColor: themeColors.border }}>
-          <h2 className="text-lg font-bold" style={{ color: themeColors.textPrimary }}>
+        <div className="flex items-center justify-between p-3 border-b" style={{ borderColor: themeColors.border }}>
+          <h2 className="text-base font-bold" style={{ color: themeColors.textPrimary }}>
             Surrender Vehicle
           </h2>
           <button 
             onClick={onClose}
-            className="p-1.5 hover:bg-gray-100 rounded-lg transition"
+            className="p-1 hover:bg-gray-100 rounded-md transition cursor-pointer"
           >
-            <X size={18} className="text-gray-500" />
+            <X size={16} className="text-gray-500" />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-4">
+        <div className="p-3">
           {!confirming ? (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {/* Search Bar */}
               <form onSubmit={handleSearch} className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
                 <input 
                   type="text"
                   placeholder="Enter Vehicle ID..."
-                  className="w-full pl-10 pr-20 py-2 rounded-lg border-2 text-sm transition focus:outline-none"
+                  className="w-full pl-8 pr-16 py-1.5 rounded-md border-2 text-xs transition focus:outline-none"
                   style={{ 
                     borderColor: themeColors.border,
                     backgroundColor: "#FAFAFA"
@@ -145,10 +145,10 @@ const SurrenderModal: React.FC<SurrenderModalProps> = ({ isOpen, onClose }) => {
                 <button 
                   type="submit"
                   disabled={loading || !searchId.trim()}
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 px-3 py-1 rounded-md text-[11px] font-bold text-white transition disabled:opacity-50"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-md text-[10px] font-bold text-white transition disabled:opacity-50 cursor-pointer"
                   style={{ backgroundColor: themeColors.primary }}
                 >
-                  {loading ? <Loader2 size={14} className="animate-spin" /> : "Search"}
+                  {loading ? <Loader2 size={12} className="animate-spin" /> : "Search"}
                 </button>
               </form>
 
@@ -169,22 +169,22 @@ const SurrenderModal: React.FC<SurrenderModalProps> = ({ isOpen, onClose }) => {
               {/* Vehicle Details & Odometer Input */}
               {vehicle && (
                 <div 
-                  className="p-5 rounded-2xl border-2 space-y-5"
+                  className="p-3 rounded-xl border-2 space-y-3"
                   style={{ borderColor: themeColors.border, backgroundColor: "#F9FAFB" }}
                 >
                   {/* Header Info */}
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2.5 rounded-xl bg-white border" style={{ borderColor: themeColors.border }}>
-                        <Bike size={24} className="text-red-500" />
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 rounded-lg bg-white border" style={{ borderColor: themeColors.border }}>
+                        <Bike size={18} className="text-red-500" />
                       </div>
                       <div>
-                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Vehicle ID</p>
-                        <h3 className="text-lg font-black" style={{ color: themeColors.textPrimary }}>{vehicle.vehicleId}</h3>
+                        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Vehicle ID</p>
+                        <h3 className="text-sm font-bold" style={{ color: themeColors.textPrimary }}>{vehicle.vehicleId}</h3>
                       </div>
                     </div>
                     <span 
-                      className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border"
+                      className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest border"
                       style={{ 
                         color: vehicle.status === "UNDER_INSPECTION" ? "#0EA5A4" : "#2563EB",
                         borderColor: (vehicle.status === "UNDER_INSPECTION" ? "#0EA5A4" : "#2563EB") + "40",
@@ -196,27 +196,27 @@ const SurrenderModal: React.FC<SurrenderModalProps> = ({ isOpen, onClose }) => {
                   </div>
 
                   {/* Model & Last Odometer */}
-                  <div className="grid grid-cols-2 gap-4 py-3 border-y" style={{ borderColor: themeColors.border }}>
+                  <div className="grid grid-cols-2 gap-3 py-2 border-y" style={{ borderColor: themeColors.border }}>
                     <div>
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Model</p>
-                      <p className="font-bold text-sm" style={{ color: themeColors.textPrimary }}>{vehicle.modelName}</p>
+                      <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Model</p>
+                      <p className="font-bold text-xs" style={{ color: themeColors.textPrimary }}>{vehicle.modelName}</p>
                     </div>
                     <div>
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">System Odometer</p>
-                      <p className="font-bold text-sm" style={{ color: themeColors.textPrimary }}>{vehicle.currentOdometer.toLocaleString()} KM</p>
+                      <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Odometer</p>
+                      <p className="font-bold text-xs" style={{ color: themeColors.textPrimary }}>{vehicle.currentOdometer.toLocaleString()} KM</p>
                     </div>
                   </div>
 
                   {/* NEW ODOMETER INPUT */}
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-1">
-                      <Gauge size={14} />
-                      Current Odometer Reading (Required)
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-bold text-gray-500 uppercase tracking-wider flex items-center gap-1">
+                      <Gauge size={12} />
+                      Current Odometer Reading
                     </label>
                     <input 
                       type="number"
-                      placeholder="Enter current KM reading..."
-                      className="w-full px-4 py-3 rounded-xl border-2 transition focus:outline-none focus:border-red-400"
+                      placeholder="Enter current KM..."
+                      className="w-full px-3 py-2 rounded-lg border-2 text-xs transition focus:outline-none focus:border-red-400"
                       style={{ borderColor: themeColors.border }}
                       value={newOdometer}
                       onChange={(e) => setNewOdometer(e.target.value)}
@@ -224,21 +224,21 @@ const SurrenderModal: React.FC<SurrenderModalProps> = ({ isOpen, onClose }) => {
                   </div>
 
                   {/* Proceed Button */}
-                  <div className="pt-2">
+                  <div className="pt-1">
                     {vehicle.status === "UNDER_INSPECTION" ? (
-                      <div className="flex items-center gap-2 text-amber-600 bg-amber-50 p-3 rounded-xl border border-amber-200">
-                        <AlertTriangle size={18} />
-                        <span className="text-sm font-bold">Already under inspection.</span>
+                      <div className="flex items-center gap-2 text-amber-600 bg-amber-50 p-2 rounded-lg border border-amber-200">
+                        <AlertTriangle size={14} />
+                        <span className="text-[10px] font-bold">Already under inspection.</span>
                       </div>
                     ) : (
                       <button 
                         onClick={handleProceedToInspection}
                         disabled={!newOdometer || isNaN(Number(newOdometer))}
-                        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-white font-bold transition hover:opacity-90 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:scale-100"
+                        className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-white font-bold text-sm transition hover:opacity-90 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:scale-100 cursor-pointer"
                         style={{ backgroundColor: themeColors.primary }}
                       >
                         Proceed to Inspection
-                        <ChevronRight size={18} />
+                        <ChevronRight size={16} />
                       </button>
                     )}
                   </div>
@@ -247,22 +247,22 @@ const SurrenderModal: React.FC<SurrenderModalProps> = ({ isOpen, onClose }) => {
             </div>
           ) : (
             /* Confirmation Dialog */
-            <div className="py-4 space-y-6">
-              <div className="flex flex-col items-center text-center space-y-3">
-                <div className="p-4 rounded-full bg-red-50 text-red-500">
-                  <AlertTriangle size={48} />
+            <div className="py-2 space-y-4">
+              <div className="flex flex-col items-center text-center space-y-2">
+                <div className="p-3 rounded-full bg-red-50 text-red-500">
+                  <AlertTriangle size={32} />
                 </div>
-                <h3 className="text-xl font-bold" style={{ color: themeColors.textPrimary }}>Confirm Surrender?</h3>
-                <p className="text-sm text-gray-500 max-w-xs">
+                <h3 className="text-lg font-bold" style={{ color: themeColors.textPrimary }}>Confirm Surrender?</h3>
+                <p className="text-xs text-gray-500 max-w-xs">
                   Confirm odometer as <span className="font-bold text-gray-800">{newOdometer} KM</span> and move <span className="font-bold text-gray-800">{vehicle?.vehicleId}</span> to inspection?
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row gap-2 pt-1">
                 <button 
                   onClick={() => setConfirming(false)}
                   disabled={updating}
-                  className="flex-1 py-3 rounded-xl border-2 font-bold text-gray-500 hover:bg-gray-50 transition"
+                  className="flex-1 py-2 rounded-lg border-2 font-bold text-xs text-gray-500 hover:bg-gray-50 transition cursor-pointer"
                   style={{ borderColor: themeColors.border }}
                 >
                   Cancel
@@ -270,10 +270,10 @@ const SurrenderModal: React.FC<SurrenderModalProps> = ({ isOpen, onClose }) => {
                 <button 
                   onClick={handleConfirmInspection}
                   disabled={updating}
-                  className="flex-1 py-3 rounded-xl text-white font-bold transition hover:opacity-90 active:scale-95 flex items-center justify-center gap-2"
+                  className="flex-1 py-2 rounded-lg text-white font-bold text-xs transition hover:opacity-90 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                   style={{ backgroundColor: themeColors.primary }}
                 >
-                  {updating ? <Loader2 size={20} className="animate-spin" /> : "Yes, Confirm"}
+                  {updating ? <Loader2 size={16} className="animate-spin" /> : "Yes, Confirm"}
                 </button>
               </div>
             </div>

@@ -51,7 +51,8 @@ export async function POST(
           lightsAndIndicators: { status: null, notes: "", photos: [] },
           brakes: { status: null, notes: "", photos: [] }
         },
-        isDamaged: false
+        isDamaged: false,
+        notes: ""
       },
       repairDetails: {
         parts: [],

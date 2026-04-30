@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IChecklistItem {
   status: "OK" | "DAMAGED" | null;
   notes?: string;
-  photos?: string[];
+  photo?: string;
 }
 
 export interface IJobCard extends Document {
@@ -36,12 +36,6 @@ export interface IJobCard extends Document {
   status: "OPEN" | "IN_PROGRESS" | "CLOSED";
 }
 
-const ChecklistItemSchema = new Schema({
-  status: { type: String, enum: ["OK", "DAMAGED", null], default: null },
-  notes: { type: String },
-  photos: [{ type: String }],
-}, { _id: false });
-
 const JobCardSchema: Schema = new Schema(
   {
     jobCardId: { type: String, required: true, unique: true, index: true },
@@ -50,13 +44,59 @@ const JobCardSchema: Schema = new Schema(
 
     inspection: {
       odometer: { type: Number, required: true },
+
       checklist: {
-        bodyAndFrame: { type: ChecklistItemSchema, default: () => ({}) },
-        tyresAndWheels: { type: ChecklistItemSchema, default: () => ({}) },
-        batteryAndCables: { type: ChecklistItemSchema, default: () => ({}) },
-        lightsAndIndicators: { type: ChecklistItemSchema, default: () => ({}) },
-        brakes: { type: ChecklistItemSchema, default: () => ({}) },
+        bodyAndFrame: {
+          status: {
+            type: String,
+            enum: ["OK", "DAMAGED", null],
+            default: null,
+          },
+          notes: { type: String },
+          photo: { type: String },
+        },
+
+        tyresAndWheels: {
+          status: {
+            type: String,
+            enum: ["OK", "DAMAGED", null],
+            default: null,
+          },
+          notes: { type: String },
+          photo: { type: String },
+        },
+
+        batteryAndCables: {
+          status: {
+            type: String,
+            enum: ["OK", "DAMAGED", null],
+            default: null,
+          },
+          notes: { type: String },
+          photo: { type: String },
+        },
+
+        lightsAndIndicators: {
+          status: {
+            type: String,
+            enum: ["OK", "DAMAGED", null],
+            default: null,
+          },
+          notes: { type: String },
+          photo: { type: String },
+        },
+
+        brakes: {
+          status: {
+            type: String,
+            enum: ["OK", "DAMAGED", null],
+            default: null,
+          },
+          notes: { type: String },
+          photo: { type: String },
+        },
       },
+
       isDamaged: { type: Boolean, default: false },
     },
 
