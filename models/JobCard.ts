@@ -1,64 +1,65 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface IJobCard extends Document {
   jobCardId: string;
-  vehicleId: string;
-  technicianId: string;
+  vehicleId: string; // Linked to Vehicle.vehicleId
+  technicianId?: string; // Linked to Technician.empId
   inspection: {
-    odometer?: number;
-    findings?: string;
-    photos?: string[];
-    isDamaged?: boolean;
+    odometer: number;
+    findings: string;
+    photos: string[];
+    isDamaged: boolean;
   };
   repairDetails: {
     parts: { partName: string; price: number }[];
-    estimatedCost?: number;
+    estimatedCost: number;
   };
   closure: {
-    finalCost?: number;
+    finalCost: number;
     closedAt?: Date;
   };
-  status: 'OPEN' | 'IN_PROGRESS' | 'CLOSED';
+  status: "OPEN" | "IN_PROGRESS" | "CLOSED";
 }
 
 const JobCardSchema: Schema = new Schema(
   {
-    jobCardId: { type: String, required: true, unique: true },
-    vehicleId: { type: String, required: true }, // Reference to Vehicle vehicleId
-    technicianId: { type: String }, // Reference to Technician empId or name
-    
-    // Stage 2: Inspection
+    jobCardId: { type: String, required: true, unique: true, index: true },
+    vehicleId: { type: String, required: true },
+    technicianId: { type: String },
+
+    // Stage 2: Inspection Data
     inspection: {
       odometer: { type: Number },
       findings: { type: String },
       photos: [{ type: String }],
-      isDamaged: { type: Boolean, default: false }
+      isDamaged: { type: Boolean, default: false },
     },
 
-    // Stage 3: Job Card Details
+    // Stage 3: Repair & Parts
     repairDetails: {
       parts: [
         {
           partName: { type: String },
-          price: { type: Number }
-        }
+          price: { type: Number },
+        },
       ],
-      estimatedCost: { type: Number }
+      estimatedCost: { type: Number, default: 0 },
     },
 
-    // Stage 4: Closure
+    // Stage 4: Closure Data
     closure: {
-      finalCost: { type: Number },
-      closedAt: { type: Date }
+      finalCost: { type: Number, default: 0 },
+      closedAt: { type: Date },
     },
-    
-    status: { 
-      type: String, 
-      enum: ['OPEN', 'IN_PROGRESS', 'CLOSED'],
-      default: 'OPEN'
-    }
+
+    status: {
+      type: String,
+      enum: ["OPEN", "IN_PROGRESS", "CLOSED"],
+      default: "OPEN",
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-export default mongoose.models.JobCard || mongoose.model<IJobCard>('JobCard', JobCardSchema);
+export default mongoose.models.JobCard ||
+  mongoose.model<IJobCard>("JobCard", JobCardSchema);

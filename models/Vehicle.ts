@@ -1,26 +1,36 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface IVehicle extends Document {
-  vehicleId: string;
+  vehicleId: string; // Human readable ID like ZOM-EV-001
   modelName?: string;
-  status: 'RENTED' | 'UNDER_INSPECTION' | 'DAMAGED' | 'UNDER_REPAIR' | 'AVAILABLE';
+  status:
+    | "RENTED"
+    | "UNDER_INSPECTION"
+    | "DAMAGED"
+    | "UNDER_REPAIR"
+    | "AVAILABLE";
   currentOdometer?: number;
-  lastServiceDate?: Date;
 }
 
 const VehicleSchema: Schema = new Schema(
   {
-    vehicleId: { type: String, required: true, unique: true },
+    vehicleId: { type: String, required: true, unique: true, index: true },
     modelName: { type: String },
     status: {
       type: String,
-      enum: ['RENTED', 'UNDER_INSPECTION', 'DAMAGED', 'UNDER_REPAIR', 'AVAILABLE'],
-      default: 'RENTED',
+      enum: [
+        "RENTED",
+        "UNDER_INSPECTION",
+        "DAMAGED",
+        "UNDER_REPAIR",
+        "AVAILABLE",
+      ],
+      default: "AVAILABLE",
     },
-    currentOdometer: { type: Number },
-    lastServiceDate: { type: Date },
+    currentOdometer: { type: Number, default: 0 },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-export default mongoose.models.Vehicle || mongoose.model<IVehicle>('Vehicle', VehicleSchema);
+export default mongoose.models.Vehicle ||
+  mongoose.model<IVehicle>("Vehicle", VehicleSchema);

@@ -1,18 +1,19 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface ITechnician extends Document {
   name: string;
-  empId: string;
+  empId: string; // Used for "View as Technician" dropdown
   isAvailable: boolean;
 }
 
 const TechnicianSchema: Schema = new Schema(
   {
     name: { type: String, required: true },
-    empId: { type: String, required: true, unique: true },
+    empId: { type: String, required: true, unique: true, index: true },
     isAvailable: { type: Boolean, default: true },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-export default mongoose.models.Technician || mongoose.model<ITechnician>('Technician', TechnicianSchema);
+export default mongoose.models.Technician ||
+  mongoose.model<ITechnician>("Technician", TechnicianSchema);
