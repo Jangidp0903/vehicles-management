@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { usePathname } from "next/navigation";
-import { X, LayoutDashboard, Bike, Wrench, ClipboardCheck } from "lucide-react";
+import { X, LayoutDashboard, Bike, Wrench, ClipboardCheck, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import { themeColors } from "@/lib/themeColors";
 import { useRole } from "@/lib/RoleContext";
@@ -25,6 +25,16 @@ const Sidebar = ({
       name: "Inspection Queue",
       icon: ClipboardCheck,
       path: "/admin/inspections",
+    },
+    {
+      name: "Damage Queue",
+      icon: AlertTriangle,
+      path: "/admin/damage",
+    },
+    {
+      name: "Under Repair",
+      icon: Wrench,
+      path: "/admin/repairs",
     },
   ];
 

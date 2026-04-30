@@ -13,6 +13,7 @@ import {
   Loader2,
   LayoutDashboard,
   ClipboardCheck,
+  AlertTriangle,
 } from "lucide-react";
 import SurrenderModal from "@/components/SurrenderModal";
 import { useRole } from "@/lib/RoleContext";
@@ -278,6 +279,122 @@ export default function Dashboard() {
                   style={{ color: themeColors.primary }}
                 >
                   Open Queue
+                  <ChevronRight size={14} />
+                </div>
+              </button>
+
+              {/* Damage Inspection Card */}
+              <button
+                onClick={() => router.push("/admin/damage")}
+                className="group relative flex flex-col items-start p-5 rounded-2xl border-2 transition-all text-left bg-white cursor-pointer hover:shadow-lg active:scale-[0.98]"
+                style={{
+                  borderColor: themeColors.border,
+                  backgroundColor: themeColors.cardBackground,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = themeColors.primary;
+                  const icon = e.currentTarget.querySelector(
+                    "#icon-bg-damage",
+                  ) as HTMLElement;
+                  if (icon) {
+                    icon.style.backgroundColor = themeColors.primary;
+                    icon.style.color = "#FFFFFF";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = themeColors.border;
+                  const icon = e.currentTarget.querySelector(
+                    "#icon-bg-damage",
+                  ) as HTMLElement;
+                  if (icon) {
+                    icon.style.backgroundColor =
+                      themeColors.sidebarActiveBackground;
+                    icon.style.color = themeColors.primary;
+                  }
+                }}
+              >
+                <div
+                  className="p-3 rounded-xl mb-4 transition-all duration-300"
+                  style={{
+                    backgroundColor: themeColors.sidebarActiveBackground,
+                    color: themeColors.primary,
+                  }}
+                  id="icon-bg-damage"
+                >
+                  <AlertTriangle size={24} />
+                </div>
+                <h3
+                  className="text-base font-bold mb-1"
+                  style={{ color: themeColors.textPrimary }}
+                >
+                  Damage Queue
+                </h3>
+                <p className="text-xs text-gray-500 mb-6 font-medium leading-relaxed">
+                  View vehicles reported as damaged and awaiting inspection.
+                </p>
+                <div
+                  className="mt-auto flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest"
+                  style={{ color: themeColors.primary }}
+                >
+                  Open Queue
+                  <ChevronRight size={14} />
+                </div>
+              </button>
+
+              {/* Repair Queue Card */}
+              <button
+                onClick={() => router.push("/admin/repairs")}
+                className="group relative flex flex-col items-start p-5 rounded-2xl border-2 transition-all text-left bg-white cursor-pointer hover:shadow-lg active:scale-[0.98]"
+                style={{
+                  borderColor: themeColors.border,
+                  backgroundColor: themeColors.cardBackground,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = themeColors.primary;
+                  const icon = e.currentTarget.querySelector(
+                    "#icon-bg-repairs-link",
+                  ) as HTMLElement;
+                  if (icon) {
+                    icon.style.backgroundColor = themeColors.primary;
+                    icon.style.color = "#FFFFFF";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = themeColors.border;
+                  const icon = e.currentTarget.querySelector(
+                    "#icon-bg-repairs-link",
+                  ) as HTMLElement;
+                  if (icon) {
+                    icon.style.backgroundColor =
+                      themeColors.sidebarActiveBackground;
+                    icon.style.color = themeColors.primary;
+                  }
+                }}
+              >
+                <div
+                  className="p-3 rounded-xl mb-4 transition-all duration-300"
+                  style={{
+                    backgroundColor: themeColors.sidebarActiveBackground,
+                    color: themeColors.primary,
+                  }}
+                  id="icon-bg-repairs-link"
+                >
+                  <Wrench size={24} />
+                </div>
+                <h3
+                  className="text-base font-bold mb-1"
+                  style={{ color: themeColors.textPrimary }}
+                >
+                  Under Repair
+                </h3>
+                <p className="text-xs text-gray-500 mb-6 font-medium leading-relaxed">
+                  Monitor vehicles currently undergoing repairs in the workshop.
+                </p>
+                <div
+                  className="mt-auto flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest"
+                  style={{ color: themeColors.primary }}
+                >
+                  View Queue
                   <ChevronRight size={14} />
                 </div>
               </button>
