@@ -111,7 +111,14 @@ const Topbar = ({
         <div className="relative">
           <button
             onClick={() => setShowRoleDropdown(!showRoleDropdown)}
-            className="flex items-center space-x-2 sm:space-x-3 bg-gray-50 border-2 border-gray-200 rounded-xl px-1.5 sm:px-3 py-1 hover:bg-red-50 hover:border-red-300 text-gray-600 transition cursor-pointer"
+            className="flex items-center space-x-2 sm:space-x-3 rounded-xl px-1.5 sm:px-3 py-1 transition cursor-pointer border-2 shadow-sm hover:shadow-md"
+            style={{
+              backgroundColor: themeColors.cardBackground,
+              borderColor: themeColors.border,
+              color: themeColors.textPrimary
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.borderColor = themeColors.primary}
+            onMouseLeave={(e) => e.currentTarget.style.borderColor = themeColors.border}
           >
             <div className="hidden md:block text-right">
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
@@ -126,24 +133,33 @@ const Topbar = ({
                 {role === "OPERATOR" ? "OP" : "TECH"}
               </p>
             </div>
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-500 border-2 border-red-600 rounded-xl flex items-center justify-center">
+            <div 
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center border-2"
+              style={{ 
+                backgroundColor: themeColors.primary,
+                borderColor: themeColors.primaryHover
+              }}
+            >
               <User size={18} className="text-white" />
             </div>
             <ChevronDown size={12} className="text-gray-400" />
           </button>
 
           {showRoleDropdown && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border-2 border-gray-100 p-2 z-50">
+            <div 
+              className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-2xl border-2 p-2 z-50"
+              style={{ borderColor: themeColors.border, backgroundColor: themeColors.cardBackground }}
+            >
               <button
                 onClick={() => {
                   setRole("OPERATOR");
                   setShowRoleDropdown(false);
                 }}
-                className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl transition cursor-pointer ${
-                  role === "OPERATOR"
-                    ? "bg-red-50 text-red-600"
-                    : "hover:bg-gray-50 text-gray-600"
-                }`}
+                className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl transition cursor-pointer`}
+                style={{
+                  backgroundColor: role === "OPERATOR" ? themeColors.sidebarActiveBackground : "transparent",
+                  color: role === "OPERATOR" ? themeColors.primary : themeColors.textSecondary
+                }}
               >
                 <Shield size={18} />
                 <span className="text-xs font-bold uppercase tracking-wider">
@@ -155,11 +171,11 @@ const Topbar = ({
                   setRole("TECHNICIAN");
                   setShowRoleDropdown(false);
                 }}
-                className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl transition cursor-pointer ${
-                  role === "TECHNICIAN"
-                    ? "bg-red-50 text-red-600"
-                    : "hover:bg-gray-50 text-gray-600"
-                }`}
+                className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl transition cursor-pointer`}
+                style={{
+                  backgroundColor: role === "TECHNICIAN" ? themeColors.sidebarActiveBackground : "transparent",
+                  color: role === "TECHNICIAN" ? themeColors.primary : themeColors.textSecondary
+                }}
               >
                 <Wrench size={18} />
                 <span className="text-xs font-bold uppercase tracking-wider">

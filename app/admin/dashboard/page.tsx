@@ -60,42 +60,42 @@ export default function Dashboard() {
       label: "Total Vehicles",
       value: stats?.TOTAL || 0,
       icon: <Bike size={18} />,
-      color: "bg-gray-900",
+      color: themeColors.primary,
       textColor: "text-white",
     },
     {
       label: "On Road (Rented)",
       value: stats?.RENTED || 0,
       icon: <History size={18} />,
-      color: "bg-blue-500",
+      color: "#3B82F6", // blue-500
       textColor: "text-white",
     },
     {
       label: "Ready for Delivery",
       value: stats?.RFD || 0,
       icon: <CheckCircle2 size={18} />,
-      color: "bg-emerald-500",
+      color: "#10B981", // emerald-500
       textColor: "text-white",
     },
     {
       label: "Under Inspection",
       value: stats?.UNDER_INSPECTION || 0,
       icon: <Search size={18} />,
-      color: "bg-teal-500",
+      color: "#14B8A6", // teal-500
       textColor: "text-white",
     },
     {
       label: "Under Repair",
       value: stats?.UNDER_REPAIR || 0,
       icon: <Wrench size={18} />,
-      color: "bg-amber-500",
+      color: "#F59E0B", // amber-500
       textColor: "text-white",
     },
     {
       label: "Damaged",
       value: stats?.DAMAGED || 0,
       icon: <AlertCircle size={18} />,
-      color: "bg-red-500",
+      color: "#EF4444", // red-500
       textColor: "text-white",
     },
   ];
@@ -139,7 +139,8 @@ export default function Dashboard() {
             style={{ borderColor: themeColors.border }}
           >
             <div
-              className={`w-8 h-8 rounded-xl ${item.color} ${item.textColor} flex items-center justify-center mb-3`}
+              className={`w-8 h-8 rounded-xl ${item.textColor} flex items-center justify-center mb-3`}
+              style={{ backgroundColor: item.color }}
             >
               {item.icon}
             </div>
@@ -166,10 +167,23 @@ export default function Dashboard() {
               {/* Surrender Card */}
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="group relative flex flex-col items-start p-5 rounded-2xl border-2 transition-colors hover:border-red-400 text-left bg-white cursor-pointer"
-                style={{ borderColor: themeColors.border }}
+                className="group relative flex flex-col items-start p-5 rounded-2xl border-2 transition-all text-left bg-white cursor-pointer hover:shadow-lg active:scale-[0.98]"
+                style={{ 
+                  borderColor: themeColors.border,
+                  backgroundColor: themeColors.cardBackground 
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = themeColors.primary}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = themeColors.border}
               >
-                <div className="p-3 rounded-xl bg-red-50 text-red-500 mb-4 transition-colors group-hover:bg-red-500 group-hover:text-white">
+                <div 
+                  className="p-3 rounded-xl mb-4 transition-colors group-hover:text-white"
+                  style={{ 
+                    backgroundColor: themeColors.sidebarActiveBackground,
+                    color: themeColors.primary
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = themeColors.primary}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = themeColors.sidebarActiveBackground}
+                >
                   <LogOut size={24} />
                 </div>
                 <h3
@@ -182,7 +196,10 @@ export default function Dashboard() {
                   Search for a vehicle to end a rental and move it to the
                   inspection stage.
                 </p>
-                <div className="mt-auto flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest text-red-600">
+                 <div 
+                  className="mt-auto flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest"
+                  style={{ color: themeColors.primary }}
+                >
                   Initiate Return
                   <ChevronRight size={14} />
                 </div>
@@ -191,10 +208,23 @@ export default function Dashboard() {
               {/* Inspection Queue Card */}
               <button
                 onClick={() => router.push("/admin/inspections")}
-                className="group relative flex flex-col items-start p-5 rounded-2xl border-2 transition-colors hover:border-teal-400 text-left bg-white cursor-pointer"
-                style={{ borderColor: themeColors.border }}
+                className="group relative flex flex-col items-start p-5 rounded-2xl border-2 transition-all text-left bg-white cursor-pointer hover:shadow-lg active:scale-[0.98]"
+                style={{ 
+                  borderColor: themeColors.border,
+                  backgroundColor: themeColors.cardBackground 
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = themeColors.primary}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = themeColors.border}
               >
-                <div className="p-3 rounded-xl bg-teal-50 text-teal-500 mb-4 transition-colors group-hover:bg-teal-500 group-hover:text-white">
+                <div 
+                  className="p-3 rounded-xl mb-4 transition-colors group-hover:text-white"
+                  style={{ 
+                    backgroundColor: themeColors.sidebarActiveBackground,
+                    color: themeColors.primary
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = themeColors.primary}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = themeColors.sidebarActiveBackground}
+                >
                   <ClipboardCheck size={24} />
                 </div>
                 <h3
@@ -207,7 +237,10 @@ export default function Dashboard() {
                   Review and complete reports for vehicles currently under
                   inspection.
                 </p>
-                <div className="mt-auto flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest text-teal-600">
+                <div 
+                  className="mt-auto flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest"
+                  style={{ color: themeColors.primary }}
+                >
                   Open Queue
                   <ChevronRight size={14} />
                 </div>
@@ -217,10 +250,23 @@ export default function Dashboard() {
             /* Maintenance Queue Card */
             <button
               onClick={() => router.push("/admin/tech-jobs")}
-              className="group relative flex flex-col items-start p-5 rounded-2xl border-2 transition-colors hover:border-emerald-400 text-left bg-white cursor-pointer"
-              style={{ borderColor: themeColors.border }}
+              className="group relative flex flex-col items-start p-5 rounded-2xl border-2 transition-all text-left bg-white cursor-pointer hover:shadow-lg active:scale-[0.98]"
+              style={{ 
+                borderColor: themeColors.border,
+                backgroundColor: themeColors.cardBackground 
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.borderColor = themeColors.primary}
+              onMouseLeave={(e) => e.currentTarget.style.borderColor = themeColors.border}
             >
-              <div className="p-3 rounded-xl bg-emerald-50 text-emerald-500 mb-4 transition-colors group-hover:bg-emerald-500 group-hover:text-white">
+              <div 
+                className="p-3 rounded-xl mb-4 transition-colors group-hover:text-white"
+                style={{ 
+                  backgroundColor: themeColors.sidebarActiveBackground,
+                  color: themeColors.primary
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = themeColors.primary}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = themeColors.sidebarActiveBackground}
+              >
                 <Wrench size={24} />
               </div>
               <h3
@@ -233,7 +279,10 @@ export default function Dashboard() {
                 Check and update your assigned repair tasks and mark them as
                 completed.
               </p>
-              <div className="mt-auto flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest text-emerald-600">
+              <div 
+                className="mt-auto flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest"
+                style={{ color: themeColors.primary }}
+              >
                 Go to Tasks
                 <ChevronRight size={14} />
               </div>
@@ -243,10 +292,23 @@ export default function Dashboard() {
           {/* Fleet Inventory Card (Visible to All) */}
           <button
             onClick={() => router.push("/admin/vehicles")}
-            className="group relative flex flex-col items-start p-5 rounded-2xl border-2 transition-colors hover:border-blue-400 text-left bg-white cursor-pointer"
-            style={{ borderColor: themeColors.border }}
+            className="group relative flex flex-col items-start p-5 rounded-2xl border-2 transition-all text-left bg-white cursor-pointer hover:shadow-lg active:scale-[0.98]"
+            style={{ 
+              borderColor: themeColors.border,
+              backgroundColor: themeColors.cardBackground 
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.borderColor = themeColors.primary}
+            onMouseLeave={(e) => e.currentTarget.style.borderColor = themeColors.border}
           >
-            <div className="p-3 rounded-xl bg-blue-50 text-blue-500 mb-4 transition-colors group-hover:bg-blue-500 group-hover:text-white">
+            <div 
+              className="p-3 rounded-xl mb-4 transition-colors group-hover:text-white"
+              style={{ 
+                backgroundColor: themeColors.sidebarActiveBackground,
+                color: themeColors.primary
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = themeColors.primary}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = themeColors.sidebarActiveBackground}
+            >
               <Bike size={24} />
             </div>
             <h3
@@ -259,7 +321,10 @@ export default function Dashboard() {
               View comprehensive details of all vehicles, history and current
               status.
             </p>
-            <div className="mt-auto flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest text-blue-600">
+            <div 
+              className="mt-auto flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest"
+              style={{ color: themeColors.primary }}
+            >
               View Inventory
               <ChevronRight size={14} />
             </div>
