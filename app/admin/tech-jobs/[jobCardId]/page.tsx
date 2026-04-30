@@ -230,7 +230,7 @@ export default function JobCardDetailsPage() {
               </div>
               <div>
                 <p className="text-[9px] font-bold text-gray-400 uppercase">
-                  Odometer
+                  Mileage
                 </p>
                 <p className="text-xs font-black text-gray-800">
                   {vehicle.currentOdometer?.toLocaleString()}{" "}

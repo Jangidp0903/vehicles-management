@@ -14,7 +14,7 @@ export async function POST(
 
     if (odometer === undefined || odometer === null) {
       return NextResponse.json(
-        { success: false, error: "Odometer reading is required" },
+        { success: false, error: "Mileage reading is required" },
         { status: 400 }
       );
     }

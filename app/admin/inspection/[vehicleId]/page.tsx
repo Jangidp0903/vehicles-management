@@ -266,7 +266,7 @@ export default function InspectionPage() {
         </div>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Entry Odometer</p>
+            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Entry Mileage</p>
             <p className="font-bold text-sm" style={{ color: themeColors.primary }}>{jobCard.inspection.odometer.toLocaleString()} <span className="text-[9px]">KM</span></p>
           </div>
           <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest bg-emerald-50 text-emerald-600 border border-emerald-100">Stage: Inspection</span>

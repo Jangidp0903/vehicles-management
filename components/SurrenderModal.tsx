@@ -70,7 +70,7 @@ const SurrenderModal: React.FC<SurrenderModalProps> = ({ isOpen, onClose }) => {
 
   const handleProceedToInspection = () => {
     if (!newOdometer || isNaN(Number(newOdometer))) {
-      alert("Please enter a valid odometer reading.");
+      alert("Please enter a valid mileage reading.");
       return;
     }
     setConfirming(true);
@@ -202,7 +202,7 @@ const SurrenderModal: React.FC<SurrenderModalProps> = ({ isOpen, onClose }) => {
                       <p className="font-bold text-xs" style={{ color: themeColors.textPrimary }}>{vehicle.modelName}</p>
                     </div>
                     <div>
-                      <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Odometer</p>
+                      <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Mileage</p>
                       <p className="font-bold text-xs" style={{ color: themeColors.textPrimary }}>{vehicle.currentOdometer.toLocaleString()} KM</p>
                     </div>
                   </div>
@@ -211,7 +211,7 @@ const SurrenderModal: React.FC<SurrenderModalProps> = ({ isOpen, onClose }) => {
                   <div className="space-y-1.5">
                     <label className="text-[9px] font-bold text-gray-500 uppercase tracking-wider flex items-center gap-1">
                       <Gauge size={12} />
-                      Current Odometer Reading
+                      Current Mileage Reading
                     </label>
                     <input 
                       type="number"
@@ -254,7 +254,7 @@ const SurrenderModal: React.FC<SurrenderModalProps> = ({ isOpen, onClose }) => {
                 </div>
                 <h3 className="text-lg font-bold" style={{ color: themeColors.textPrimary }}>Confirm Surrender?</h3>
                 <p className="text-xs text-gray-500 max-w-xs">
-                  Confirm odometer as <span className="font-bold text-gray-800">{newOdometer} KM</span> and move <span className="font-bold text-gray-800">{vehicle?.vehicleId}</span> to inspection?
+                  Confirm mileage as <span className="font-bold text-gray-800">{newOdometer} KM</span> and move <span className="font-bold text-gray-800">{vehicle?.vehicleId}</span> to inspection?
                 </p>
               </div>
 

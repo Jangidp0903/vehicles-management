@@ -143,7 +143,7 @@ export default function VehiclesPage() {
                   Status
                 </th>
                 <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-gray-500">
-                  Odometer
+                  Mileage
                 </th>
                 <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-gray-500">
                   Added On
@@ -297,7 +297,7 @@ export default function VehiclesPage() {
                 >
                   <div className="flex flex-col">
                     <span className="text-[9px] font-bold text-gray-400 uppercase">
-                      Odometer
+                      Mileage
                     </span>
                     <span
                       className="text-xs font-bold"
