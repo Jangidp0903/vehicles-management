@@ -172,17 +172,30 @@ export default function Dashboard() {
                   borderColor: themeColors.border,
                   backgroundColor: themeColors.cardBackground 
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.borderColor = themeColors.primary}
-                onMouseLeave={(e) => e.currentTarget.style.borderColor = themeColors.border}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = themeColors.primary;
+                  const icon = e.currentTarget.querySelector("#icon-bg-surrender") as HTMLElement;
+                  if (icon) {
+                    icon.style.backgroundColor = themeColors.primary;
+                    icon.style.color = "#FFFFFF";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = themeColors.border;
+                  const icon = e.currentTarget.querySelector("#icon-bg-surrender") as HTMLElement;
+                  if (icon) {
+                    icon.style.backgroundColor = themeColors.sidebarActiveBackground;
+                    icon.style.color = themeColors.primary;
+                  }
+                }}
               >
                 <div 
-                  className="p-3 rounded-xl mb-4 transition-colors group-hover:text-white"
+                  className="p-3 rounded-xl mb-4 transition-all duration-300"
                   style={{ 
                     backgroundColor: themeColors.sidebarActiveBackground,
                     color: themeColors.primary
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = themeColors.primary}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = themeColors.sidebarActiveBackground}
+                  id="icon-bg-surrender"
                 >
                   <LogOut size={24} />
                 </div>
@@ -213,17 +226,30 @@ export default function Dashboard() {
                   borderColor: themeColors.border,
                   backgroundColor: themeColors.cardBackground 
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.borderColor = themeColors.primary}
-                onMouseLeave={(e) => e.currentTarget.style.borderColor = themeColors.border}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = themeColors.primary;
+                  const icon = e.currentTarget.querySelector("#icon-bg-inspect") as HTMLElement;
+                  if (icon) {
+                    icon.style.backgroundColor = themeColors.primary;
+                    icon.style.color = "#FFFFFF";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = themeColors.border;
+                  const icon = e.currentTarget.querySelector("#icon-bg-inspect") as HTMLElement;
+                  if (icon) {
+                    icon.style.backgroundColor = themeColors.sidebarActiveBackground;
+                    icon.style.color = themeColors.primary;
+                  }
+                }}
               >
                 <div 
-                  className="p-3 rounded-xl mb-4 transition-colors group-hover:text-white"
+                  className="p-3 rounded-xl mb-4 transition-all duration-300"
                   style={{ 
                     backgroundColor: themeColors.sidebarActiveBackground,
                     color: themeColors.primary
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = themeColors.primary}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = themeColors.sidebarActiveBackground}
+                  id="icon-bg-inspect"
                 >
                   <ClipboardCheck size={24} />
                 </div>
@@ -255,17 +281,30 @@ export default function Dashboard() {
                 borderColor: themeColors.border,
                 backgroundColor: themeColors.cardBackground 
               }}
-              onMouseEnter={(e) => e.currentTarget.style.borderColor = themeColors.primary}
-              onMouseLeave={(e) => e.currentTarget.style.borderColor = themeColors.border}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = themeColors.primary;
+                const icon = e.currentTarget.querySelector("#icon-bg-maintenance") as HTMLElement;
+                if (icon) {
+                  icon.style.backgroundColor = themeColors.primary;
+                  icon.style.color = "#FFFFFF";
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = themeColors.border;
+                const icon = e.currentTarget.querySelector("#icon-bg-maintenance") as HTMLElement;
+                if (icon) {
+                  icon.style.backgroundColor = themeColors.sidebarActiveBackground;
+                  icon.style.color = themeColors.primary;
+                }
+              }}
             >
               <div 
-                className="p-3 rounded-xl mb-4 transition-colors group-hover:text-white"
+                className="p-3 rounded-xl mb-4 transition-all duration-300"
                 style={{ 
                   backgroundColor: themeColors.sidebarActiveBackground,
                   color: themeColors.primary
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = themeColors.primary}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = themeColors.sidebarActiveBackground}
+                id="icon-bg-maintenance"
               >
                 <Wrench size={24} />
               </div>
@@ -297,17 +336,30 @@ export default function Dashboard() {
               borderColor: themeColors.border,
               backgroundColor: themeColors.cardBackground 
             }}
-            onMouseEnter={(e) => e.currentTarget.style.borderColor = themeColors.primary}
-            onMouseLeave={(e) => e.currentTarget.style.borderColor = themeColors.border}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = themeColors.primary;
+              const icon = e.currentTarget.querySelector("#icon-bg-inventory") as HTMLElement;
+              if (icon) {
+                icon.style.backgroundColor = themeColors.primary;
+                icon.style.color = "#FFFFFF";
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = themeColors.border;
+              const icon = e.currentTarget.querySelector("#icon-bg-inventory") as HTMLElement;
+              if (icon) {
+                icon.style.backgroundColor = themeColors.sidebarActiveBackground;
+                icon.style.color = themeColors.primary;
+              }
+            }}
           >
             <div 
-              className="p-3 rounded-xl mb-4 transition-colors group-hover:text-white"
+              className="p-3 rounded-xl mb-4 transition-all duration-300"
               style={{ 
                 backgroundColor: themeColors.sidebarActiveBackground,
                 color: themeColors.primary
               }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = themeColors.primary}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = themeColors.sidebarActiveBackground}
+              id="icon-bg-inventory"
             >
               <Bike size={24} />
             </div>
