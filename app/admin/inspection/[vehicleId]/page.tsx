@@ -336,7 +336,7 @@ export default function InspectionPage() {
                             type="file" 
                             accept="image/*" 
                             className="hidden" 
-                            ref={(el) => (fileInputRefs.current[item.id] = el)}
+                            ref={(el) => { fileInputRefs.current[item.id] = el; }}
                             onChange={(e) => handleFileChange(item.id, e)}
                           />
                         </>

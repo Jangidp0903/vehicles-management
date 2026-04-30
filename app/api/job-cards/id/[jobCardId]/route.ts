@@ -26,20 +26,27 @@ export async function PATCH(
       );
     }
 
-    // If a technician is assigned, mark them as unavailable
-    if (body.technicianId) {
+    // Sync status logic
+    let vehicleStatus: string = updatedJobCard.inspection.isDamaged ? "DAMAGED" : "AVAILABLE";
+
+    if (updatedJobCard.status === "CLOSED") {
+      vehicleStatus = "AVAILABLE";
+      // Mark technician as available again when job is closed
+      if (updatedJobCard.technicianId) {
+        await Technician.findOneAndUpdate(
+          { empId: updatedJobCard.technicianId },
+          { $set: { isAvailable: true } }
+        );
+      }
+    } else if (updatedJobCard.technicianId) {
+      // If assigned but not closed, it's under repair
+      vehicleStatus = "UNDER_REPAIR";
+      
+      // Also ensure technician is marked as unavailable if they are assigned
       await Technician.findOneAndUpdate(
-        { empId: body.technicianId },
+        { empId: updatedJobCard.technicianId },
         { $set: { isAvailable: false } }
       );
-    }
-
-    // Sync vehicle status based on inspection result and repair stage
-    let vehicleStatus = updatedJobCard.inspection.isDamaged ? "DAMAGED" : "AVAILABLE";
-    
-    // If a technician is assigned, the vehicle is officially under repair
-    if (updatedJobCard.technicianId) {
-      vehicleStatus = "UNDER_REPAIR";
     }
 
     await Vehicle.findOneAndUpdate(
@@ -53,6 +60,36 @@ export async function PATCH(
     });
   } catch (error) {
     console.error("Error updating job card:", error);
+    return NextResponse.json(
+      { success: false, error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET(
+  request: Request,
+  { params }: { params: { jobCardId: string } }
+) {
+  try {
+    await connectToDatabase();
+    const { jobCardId } = await params;
+
+    const jobCard = await JobCard.findOne({ jobCardId: jobCardId });
+
+    if (!jobCard) {
+      return NextResponse.json(
+        { success: false, error: "Job Card not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: jobCard,
+    });
+  } catch (error) {
+    console.error("Error fetching job card:", error);
     return NextResponse.json(
       { success: false, error: "Internal Server Error" },
       { status: 500 }

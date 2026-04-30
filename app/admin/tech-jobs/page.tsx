@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { themeColors } from "@/lib/themeColors";
 import { useRole } from "@/lib/RoleContext";
+import Link from "next/link";
 
 interface JobCard {
   _id: string;
@@ -143,10 +144,13 @@ export default function TechJobsPage() {
                 </div>
               </div>
 
-              <button className="w-full py-2.5 rounded-xl bg-gray-900 text-white text-[11px] font-bold uppercase tracking-widest hover:bg-black transition flex items-center justify-center gap-2 cursor-pointer">
+              <Link 
+                href={`/admin/tech-jobs/${job.jobCardId}`}
+                className="w-full py-2.5 rounded-xl bg-gray-900 text-white text-[11px] font-bold uppercase tracking-widest hover:bg-black transition flex items-center justify-center gap-2 cursor-pointer"
+              >
                 <CheckCircle2 size={14} />
-                Update Progress
-              </button>
+                View Details
+              </Link>
             </div>
           ))}
         </div>
