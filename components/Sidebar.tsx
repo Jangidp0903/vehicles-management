@@ -21,7 +21,11 @@ const Sidebar = ({
   const operatorItems = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
     { name: "Vehicles Detail", icon: Bike, path: "/admin/vehicles" },
-    { name: "Inspection Queue", icon: ClipboardCheck, path: "/admin/inspections" },
+    {
+      name: "Inspection Queue",
+      icon: ClipboardCheck,
+      path: "/admin/inspections",
+    },
   ];
 
   const technicianItems = [
@@ -81,13 +85,11 @@ const Sidebar = ({
               <Link
                 key={item.name}
                 href={item.path}
-                className={`relative flex items-center text-sm font-medium px-4 py-3 rounded-md transition-all duration-200 cursor-pointer ${
+                className={`relative flex items-center text-sm px-4 py-3 rounded-md transition-all duration-200 cursor-pointer ${
                   isCollapsed ? "justify-center px-2" : ""
-                } ${isActive ? "font-semibold" : ""}`}
+                } ${isActive ? "font-bold" : "font-medium"}`}
                 style={{
-                  backgroundColor: isActive
-                    ? themeColors.sidebarActiveBackground
-                    : "transparent",
+                  backgroundColor: "transparent",
                   color: isActive
                     ? themeColors.primary
                     : themeColors.textSecondary,
@@ -95,22 +97,19 @@ const Sidebar = ({
                 title={isCollapsed ? item.name : undefined}
                 onMouseEnter={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.backgroundColor =
-                      themeColors.sidebarActiveBackground;
                     e.currentTarget.style.color = themeColors.primary;
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.backgroundColor = "transparent";
                     e.currentTarget.style.color = themeColors.textSecondary;
                   }
                 }}
               >
-                {/* Active left border line */}
+                {/* Minimal Active Indicator */}
                 {isActive && (
                   <span
-                    className="absolute left-0 top-0 h-full w-[3px] rounded-r-md"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r-full"
                     style={{ backgroundColor: themeColors.primary }}
                   ></span>
                 )}
