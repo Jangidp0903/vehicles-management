@@ -6,7 +6,7 @@ import Technician from "@/models/Technician";
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { jobCardId: string } }
+  { params }: { params: Promise<{ jobCardId: string }> }
 ) {
   try {
     await connectToDatabase();
@@ -69,7 +69,7 @@ export async function PATCH(
 
 export async function GET(
   request: Request,
-  { params }: { params: { jobCardId: string } }
+  { params }: { params: Promise<{ jobCardId: string }> }
 ) {
   try {
     await connectToDatabase();

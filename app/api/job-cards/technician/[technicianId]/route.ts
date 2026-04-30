@@ -4,7 +4,7 @@ import JobCard from "@/models/JobCard";
 
 export async function GET(
   request: Request,
-  { params }: { params: { technicianId: string } }
+  { params }: { params: Promise<{ technicianId: string }> }
 ) {
   try {
     await connectToDatabase();

@@ -5,7 +5,7 @@ import Vehicle from "@/models/Vehicle";
 // GET vehicle by vehicleId
 export async function GET(
   request: Request,
-  { params }: { params: { vehicleId: string } }
+  { params }: { params: Promise<{ vehicleId: string }> }
 ) {
   try {
     await connectToDatabase();
@@ -36,7 +36,7 @@ export async function GET(
 // PATCH vehicle status
 export async function PATCH(
   request: Request,
-  { params }: { params: { vehicleId: string } }
+  { params }: { params: Promise<{ vehicleId: string }> }
 ) {
   try {
     await connectToDatabase();

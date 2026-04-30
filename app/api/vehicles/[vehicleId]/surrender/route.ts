@@ -5,7 +5,7 @@ import JobCard from "@/models/JobCard";
 
 export async function POST(
   request: Request,
-  { params }: { params: { vehicleId: string } }
+  { params }: { params: Promise<{ vehicleId: string }> }
 ) {
   try {
     await connectToDatabase();
