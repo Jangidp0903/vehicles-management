@@ -1,14 +1,10 @@
 "use client";
 import React from "react";
 import { usePathname } from "next/navigation";
-import { X, LayoutDashboard, Bike } from "lucide-react";
+import { X, LayoutDashboard, Bike, Wrench } from "lucide-react";
 import Link from "next/link";
 import { themeColors } from "@/lib/themeColors";
-
-const menuItems = [
-  { name: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
-  { name: "Vehicles Detail", icon: LayoutDashboard, path: "/admin/vehicles" },
-];
+import { useRole } from "@/lib/RoleContext";
 
 const Sidebar = ({
   isOpen,
@@ -20,6 +16,19 @@ const Sidebar = ({
   onClose: () => void;
 }) => {
   const pathname = usePathname();
+  const { role } = useRole();
+
+  const operatorItems = [
+    { name: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
+    { name: "Vehicles Detail", icon: Bike, path: "/admin/vehicles" },
+  ];
+
+  const technicianItems = [
+    { name: "My Jobs", icon: Wrench, path: "/admin/tech-jobs" },
+    { name: "Repair Queue", icon: Bike, path: "/admin/vehicles" },
+  ];
+
+  const menuItems = role === "OPERATOR" ? operatorItems : technicianItems;
 
   return (
     <>

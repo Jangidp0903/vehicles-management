@@ -7,6 +7,7 @@ import {
   Bike,
 } from "lucide-react";
 import { themeColors } from "@/lib/themeColors";
+import { useRole } from "@/lib/RoleContext";
 
 interface Vehicle {
   _id: string;
@@ -21,6 +22,7 @@ export default function VehiclesPage() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const { role } = useRole();
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -43,29 +45,32 @@ export default function VehiclesPage() {
     fetchVehicles();
   }, []);
 
-  const filteredVehicles = vehicles.filter(
-    (v) =>
-      v.vehicleId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      v.modelName.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const filteredVehicles = vehicles
+    .filter(v => {
+      // Role-based filtering: Technicians only see vehicles under repair
+      if (role === "TECHNICIAN") {
+        return v.status === "UNDER_REPAIR";
+      }
+      return true;
+    })
+    .filter(
+      (v) =>
+        v.vehicleId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        v.modelName.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "AVAILABLE":
         return "#16A34A";
-
       case "RENTED":
         return "#2563EB";
-
       case "DAMAGED":
         return "#DC2626";
-
       case "UNDER_REPAIR":
         return "#D97706";
-
       case "UNDER_INSPECTION":
         return "#0EA5A4";
-
       default:
         return "#6B7280";
     }
@@ -80,10 +85,12 @@ export default function VehiclesPage() {
             className="text-xl font-bold"
             style={{ color: themeColors.textPrimary }}
           >
-            Vehicles Inventory
+            {role === "TECHNICIAN" ? "Repair Queue" : "Vehicles Inventory"}
           </h1>
           <p className="text-xs" style={{ color: themeColors.textSecondary }}>
-            Manage and track all fleet vehicles from here.
+            {role === "TECHNICIAN" 
+              ? "Showing all vehicles currently assigned for repair." 
+              : "Manage and track all fleet vehicles from here."}
           </p>
         </div>
       </div>
@@ -225,7 +232,7 @@ export default function VehiclesPage() {
                     colSpan={5}
                     className="px-6 py-20 text-center text-gray-500"
                   >
-                    No vehicles found.
+                    No vehicles found in {role === "TECHNICIAN" ? "repair queue" : "inventory"}.
                   </td>
                 </tr>
               )}

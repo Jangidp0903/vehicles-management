@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/db";
 import JobCard from "@/models/JobCard";
 import Vehicle from "@/models/Vehicle";
+import Technician from "@/models/Technician";
 
 export async function PATCH(
   request: Request,
@@ -22,6 +23,14 @@ export async function PATCH(
       return NextResponse.json(
         { success: false, error: "Job Card not found" },
         { status: 404 }
+      );
+    }
+
+    // If a technician is assigned, mark them as unavailable
+    if (body.technicianId) {
+      await Technician.findOneAndUpdate(
+        { empId: body.technicianId },
+        { $set: { isAvailable: false } }
       );
     }
 
