@@ -25,8 +25,14 @@ export async function PATCH(
       );
     }
 
-    // Sync vehicle status based on inspection result
-    const vehicleStatus = updatedJobCard.inspection.isDamaged ? "DAMAGED" : "AVAILABLE";
+    // Sync vehicle status based on inspection result and repair stage
+    let vehicleStatus = updatedJobCard.inspection.isDamaged ? "DAMAGED" : "AVAILABLE";
+    
+    // If a technician is assigned, the vehicle is officially under repair
+    if (updatedJobCard.technicianId) {
+      vehicleStatus = "UNDER_REPAIR";
+    }
+
     await Vehicle.findOneAndUpdate(
       { vehicleId: updatedJobCard.vehicleId },
       { $set: { status: vehicleStatus } }

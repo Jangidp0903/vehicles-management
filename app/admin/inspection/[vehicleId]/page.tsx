@@ -19,6 +19,7 @@ import {
   X
 } from "lucide-react";
 import { themeColors } from "@/lib/themeColors";
+import RepairAssignmentModal from "@/components/RepairAssignmentModal";
 
 interface ChecklistItem {
   status: "OK" | "DAMAGED" | null;
@@ -81,6 +82,7 @@ export default function InspectionPage() {
 
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [isRepairModalOpen, setIsRepairModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -187,9 +189,15 @@ export default function InspectionPage() {
         },
         status: jobCardStatus
       });
+
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
-      router.push("/admin/dashboard");
+
+      if (isDamaged) {
+        setIsRepairModalOpen(true);
+      } else {
+        router.push("/admin/dashboard");
+      }
     } catch (err) {
       if (axios.isAxiosError(err)) {
         alert("Error saving: " + (err.response?.data?.error || "Unknown error"));
@@ -358,6 +366,18 @@ export default function InspectionPage() {
           {saving ? <Loader2 size={18} className="animate-spin" /> : <><Save size={18} /> Submit Result</>}
         </button>
       </div>
+
+      {/* Repair Assignment Modal */}
+      {jobCard && vehicle && (
+        <RepairAssignmentModal 
+          isOpen={isRepairModalOpen}
+          onClose={() => router.push("/admin/dashboard")}
+          jobCardId={jobCard.jobCardId}
+          vehicleId={vehicle.vehicleId}
+          damagedItems={INSPECTION_ITEMS.filter(item => checklist[item.id].status === "DAMAGED").map(item => item.id)}
+          onSuccess={() => router.push("/admin/dashboard")}
+        />
+      )}
     </div>
   );
 }
