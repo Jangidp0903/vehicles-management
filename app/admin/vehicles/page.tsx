@@ -103,7 +103,7 @@ export default function VehiclesPage() {
           />
           <input
             type="text"
-            placeholder="Search by Vehicle ID or Model..."
+            placeholder="Search by Vehicle ID..."
             className="w-full pl-9 pr-4 py-1.5 rounded-lg border-2 text-sm transition focus:outline-none"
             style={{
               borderColor: themeColors.border,
