@@ -70,7 +70,7 @@ const SurrenderModal: React.FC<SurrenderModalProps> = ({ isOpen, onClose }) => {
 
   const handleProceedToInspection = () => {
     if (!newOdometer || isNaN(Number(newOdometer))) {
-      alert("Please enter a valid mileage reading.");
+      setError("Please enter a valid mileage reading.");
       return;
     }
     setConfirming(true);
@@ -94,9 +94,9 @@ const SurrenderModal: React.FC<SurrenderModalProps> = ({ isOpen, onClose }) => {
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        alert("Failed to surrender vehicle: " + (err.response?.data?.error || "Unknown error"));
+        setError("Failed to surrender vehicle: " + (err.response?.data?.error || "Unknown error"));
       } else {
-        alert("An unexpected error occurred");
+        setError("An unexpected error occurred");
       }
       setConfirming(false);
     } finally {

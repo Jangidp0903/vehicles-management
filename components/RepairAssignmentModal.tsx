@@ -97,11 +97,11 @@ const RepairAssignmentModal: React.FC<RepairAssignmentModalProps> = ({
 
   const handleSubmit = async () => {
     if (!selectedTechnician) {
-      alert("Please select a technician.");
+      setError("Please select a technician.");
       return;
     }
     if (selectedParts.length === 0) {
-      alert("Please select at least one part for repair.");
+      setError("Please select at least one part for repair.");
       return;
     }
 
