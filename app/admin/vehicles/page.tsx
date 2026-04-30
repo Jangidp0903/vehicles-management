@@ -100,7 +100,7 @@ export default function VehiclesPage() {
 
       {/* Tabs Filter */}
       {role !== "TECHNICIAN" && (
-        <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-3 pt-1 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0 flex-nowrap">
           {[
             { id: "ALL", label: "All Vehicles" },
             { id: "RFD", label: "RFD" },
