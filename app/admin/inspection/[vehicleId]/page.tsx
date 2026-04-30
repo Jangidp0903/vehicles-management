@@ -145,11 +145,18 @@ export default function InspectionPage() {
   const handleFileChange = (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      const newPhoto = URL.createObjectURL(files[0]);
-      setChecklist(prev => ({
-        ...prev,
-        [id]: { ...prev[id], photo: newPhoto }
-      }));
+      const file = files[0];
+      const reader = new FileReader();
+      
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setChecklist(prev => ({
+          ...prev,
+          [id]: { ...prev[id], photo: base64String }
+        }));
+      };
+
+      reader.readAsDataURL(file);
     }
   };
 

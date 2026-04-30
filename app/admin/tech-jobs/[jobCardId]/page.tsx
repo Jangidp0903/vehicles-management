@@ -310,16 +310,24 @@ export default function JobCardDetailsPage() {
                         </p>
                       </div>
                     )}
-                    {item.photo && (
+                    {item.photo ? (
                       <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden border-2 border-red-100 group">
                         <img
                           src={item.photo}
                           alt={key}
                           className="w-full h-full object-cover transition-transform group-hover:scale-110"
+                          onError={(e) => {
+                            e.currentTarget.src = "https://placehold.co/400x300?text=Image+Not+Found";
+                          }}
                         />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
                           <Camera size={20} className="text-white" />
                         </div>
+                      </div>
+                    ) : (
+                      <div className="w-full aspect-[4/3] rounded-lg bg-gray-100 border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-gray-300">
+                        <Camera size={24} className="mb-1 opacity-20" />
+                        <span className="text-[8px] font-bold uppercase tracking-widest opacity-40">No Image</span>
                       </div>
                     )}
                   </div>
