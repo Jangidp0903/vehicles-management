@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { themeColors } from "@/lib/themeColors";
 import { useRole } from "@/lib/RoleContext";
+import { useNotification } from "@/lib/NotificationContext";
 
 interface ChecklistItem {
   status: "OK" | "DAMAGED" | null;
@@ -54,6 +55,7 @@ export default function JobCardDetailsPage() {
   const { jobCardId } = useParams();
   const router = useRouter();
   const { role, technicianId } = useRole();
+  const { showSuccess, showError, showLoading, hideNotification } = useNotification();
 
   const [jobCard, setJobCard] = useState<JobCard | null>(null);
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
@@ -91,20 +93,24 @@ export default function JobCardDetailsPage() {
 
     // Security check
     if (role === "TECHNICIAN" && jobCard.technicianId !== technicianId) {
-      alert("You are not assigned to this job card.");
+      showError("Access Denied", "You are not assigned to this job card.");
       return;
     }
 
     setCompleting(true);
+    showLoading("Processing", "Finalizing maintenance records...");
     try {
       await axios.patch(`/api/job-cards/id/${jobCardId}`, {
         status: "CLOSED",
       });
-      alert("Repair marked as completed! Vehicle is now AVAILABLE.");
-      router.push("/admin/tech-jobs");
+      showSuccess("Repair Completed", "Vehicle is now AVAILABLE and cleared for operations.");
+      setTimeout(() => {
+        hideNotification();
+        router.push("/admin/tech-jobs");
+      }, 2000);
     } catch (err) {
       console.error("Error completing repair:", err);
-      alert("Failed to complete repair. Please try again.");
+      showError("Submission Failed", "There was an error updating the maintenance records. Please try again.");
     } finally {
       setCompleting(false);
     }

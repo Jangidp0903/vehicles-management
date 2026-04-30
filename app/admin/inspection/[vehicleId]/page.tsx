@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { themeColors } from "@/lib/themeColors";
 import RepairAssignmentModal from "@/components/RepairAssignmentModal";
+import { useNotification } from "@/lib/NotificationContext";
 
 interface ChecklistItem {
   status: "OK" | "DAMAGED" | null;
@@ -72,6 +73,7 @@ export default function InspectionPage() {
   const { vehicleId } = useParams();
   const router = useRouter();
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+  const { showSuccess, showError, showLoading, hideNotification } = useNotification();
   
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
   const [jobCard, setJobCard] = useState<JobCard | null>(null);
@@ -143,7 +145,6 @@ export default function InspectionPage() {
   const handleFileChange = (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      // For demo purposes, we'll just use a fake URL
       const newPhoto = URL.createObjectURL(files[0]);
       setChecklist(prev => ({
         ...prev,
@@ -162,21 +163,20 @@ export default function InspectionPage() {
   const handleSave = async () => {
     if (!jobCard) return;
 
-    // Validation: Check if all items are selected
     const allSelected = INSPECTION_ITEMS.every(item => checklist[item.id].status !== null);
     if (!allSelected) {
-      alert("Please complete all inspection checklist items before submitting.");
+      showError("Incomplete", "Please complete all inspection checklist items before submitting.");
       return;
     }
 
-    // Validation: Check if damaged items have notes
     const missingNotes = INSPECTION_ITEMS.find(item => checklist[item.id].status === "DAMAGED" && !checklist[item.id].notes?.trim());
     if (missingNotes) {
-      alert(`Please provide notes for the damaged item: ${missingNotes.label}`);
+      showError("Notes Required", `Please provide notes for the damaged item: ${missingNotes.label}`);
       return;
     }
 
     setSaving(true);
+    showLoading("Submitting", "Recording inspection results...");
     try {
       const isDamaged = Object.values(checklist).some(item => item.status === "DAMAGED");
       const jobCardStatus = isDamaged ? "IN_PROGRESS" : "CLOSED";
@@ -190,20 +190,16 @@ export default function InspectionPage() {
         status: jobCardStatus
       });
 
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
-
+      hideNotification();
       if (isDamaged) {
         setIsRepairModalOpen(true);
       } else {
+        showSuccess("Success", "Inspection completed successfully.");
         router.push("/admin/dashboard");
       }
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        alert("Error saving: " + (err.response?.data?.error || "Unknown error"));
-      } else {
-        alert("Error saving: An unexpected error occurred");
-      }
+      console.error("Save error:", err);
+      showError("Error", "Failed to save inspection results.");
     } finally {
       setSaving(false);
     }
