@@ -168,13 +168,15 @@ export default function Dashboard() {
               <button
                 onClick={() => setIsModalOpen(true)}
                 className="group relative flex flex-col items-start p-5 rounded-2xl border-2 transition-all text-left bg-white cursor-pointer hover:shadow-lg active:scale-[0.98]"
-                style={{ 
+                style={{
                   borderColor: themeColors.border,
-                  backgroundColor: themeColors.cardBackground 
+                  backgroundColor: themeColors.cardBackground,
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = themeColors.primary;
-                  const icon = e.currentTarget.querySelector("#icon-bg-surrender") as HTMLElement;
+                  const icon = e.currentTarget.querySelector(
+                    "#icon-bg-surrender",
+                  ) as HTMLElement;
                   if (icon) {
                     icon.style.backgroundColor = themeColors.primary;
                     icon.style.color = "#FFFFFF";
@@ -182,18 +184,21 @@ export default function Dashboard() {
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.borderColor = themeColors.border;
-                  const icon = e.currentTarget.querySelector("#icon-bg-surrender") as HTMLElement;
+                  const icon = e.currentTarget.querySelector(
+                    "#icon-bg-surrender",
+                  ) as HTMLElement;
                   if (icon) {
-                    icon.style.backgroundColor = themeColors.sidebarActiveBackground;
+                    icon.style.backgroundColor =
+                      themeColors.sidebarActiveBackground;
                     icon.style.color = themeColors.primary;
                   }
                 }}
               >
-                <div 
+                <div
                   className="p-3 rounded-xl mb-4 transition-all duration-300"
-                  style={{ 
+                  style={{
                     backgroundColor: themeColors.sidebarActiveBackground,
-                    color: themeColors.primary
+                    color: themeColors.primary,
                   }}
                   id="icon-bg-surrender"
                 >
@@ -209,7 +214,7 @@ export default function Dashboard() {
                   Search for a vehicle to end a rental and move it to the
                   inspection stage.
                 </p>
-                 <div 
+                <div
                   className="mt-auto flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest"
                   style={{ color: themeColors.primary }}
                 >
@@ -222,13 +227,15 @@ export default function Dashboard() {
               <button
                 onClick={() => router.push("/admin/inspections")}
                 className="group relative flex flex-col items-start p-5 rounded-2xl border-2 transition-all text-left bg-white cursor-pointer hover:shadow-lg active:scale-[0.98]"
-                style={{ 
+                style={{
                   borderColor: themeColors.border,
-                  backgroundColor: themeColors.cardBackground 
+                  backgroundColor: themeColors.cardBackground,
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = themeColors.primary;
-                  const icon = e.currentTarget.querySelector("#icon-bg-inspect") as HTMLElement;
+                  const icon = e.currentTarget.querySelector(
+                    "#icon-bg-inspect",
+                  ) as HTMLElement;
                   if (icon) {
                     icon.style.backgroundColor = themeColors.primary;
                     icon.style.color = "#FFFFFF";
@@ -236,18 +243,21 @@ export default function Dashboard() {
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.borderColor = themeColors.border;
-                  const icon = e.currentTarget.querySelector("#icon-bg-inspect") as HTMLElement;
+                  const icon = e.currentTarget.querySelector(
+                    "#icon-bg-inspect",
+                  ) as HTMLElement;
                   if (icon) {
-                    icon.style.backgroundColor = themeColors.sidebarActiveBackground;
+                    icon.style.backgroundColor =
+                      themeColors.sidebarActiveBackground;
                     icon.style.color = themeColors.primary;
                   }
                 }}
               >
-                <div 
+                <div
                   className="p-3 rounded-xl mb-4 transition-all duration-300"
-                  style={{ 
+                  style={{
                     backgroundColor: themeColors.sidebarActiveBackground,
-                    color: themeColors.primary
+                    color: themeColors.primary,
                   }}
                   id="icon-bg-inspect"
                 >
@@ -263,7 +273,7 @@ export default function Dashboard() {
                   Review and complete reports for vehicles currently under
                   inspection.
                 </p>
-                <div 
+                <div
                   className="mt-auto flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest"
                   style={{ color: themeColors.primary }}
                 >
@@ -277,13 +287,15 @@ export default function Dashboard() {
             <button
               onClick={() => router.push("/admin/tech-jobs")}
               className="group relative flex flex-col items-start p-5 rounded-2xl border-2 transition-all text-left bg-white cursor-pointer hover:shadow-lg active:scale-[0.98]"
-              style={{ 
+              style={{
                 borderColor: themeColors.border,
-                backgroundColor: themeColors.cardBackground 
+                backgroundColor: themeColors.cardBackground,
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = themeColors.primary;
-                const icon = e.currentTarget.querySelector("#icon-bg-maintenance") as HTMLElement;
+                const icon = e.currentTarget.querySelector(
+                  "#icon-bg-maintenance",
+                ) as HTMLElement;
                 if (icon) {
                   icon.style.backgroundColor = themeColors.primary;
                   icon.style.color = "#FFFFFF";
@@ -291,18 +303,21 @@ export default function Dashboard() {
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.borderColor = themeColors.border;
-                const icon = e.currentTarget.querySelector("#icon-bg-maintenance") as HTMLElement;
+                const icon = e.currentTarget.querySelector(
+                  "#icon-bg-maintenance",
+                ) as HTMLElement;
                 if (icon) {
-                  icon.style.backgroundColor = themeColors.sidebarActiveBackground;
+                  icon.style.backgroundColor =
+                    themeColors.sidebarActiveBackground;
                   icon.style.color = themeColors.primary;
                 }
               }}
             >
-              <div 
+              <div
                 className="p-3 rounded-xl mb-4 transition-all duration-300"
-                style={{ 
+                style={{
                   backgroundColor: themeColors.sidebarActiveBackground,
-                  color: themeColors.primary
+                  color: themeColors.primary,
                 }}
                 id="icon-bg-maintenance"
               >
@@ -318,7 +333,7 @@ export default function Dashboard() {
                 Check and update your assigned repair tasks and mark them as
                 completed.
               </p>
-              <div 
+              <div
                 className="mt-auto flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest"
                 style={{ color: themeColors.primary }}
               >
@@ -328,17 +343,19 @@ export default function Dashboard() {
             </button>
           )}
 
-          {/* Fleet Inventory Card (Visible to All) */}
+          {/* Vehicle Inventory Card (Visible to All) */}
           <button
             onClick={() => router.push("/admin/vehicles")}
             className="group relative flex flex-col items-start p-5 rounded-2xl border-2 transition-all text-left bg-white cursor-pointer hover:shadow-lg active:scale-[0.98]"
-            style={{ 
+            style={{
               borderColor: themeColors.border,
-              backgroundColor: themeColors.cardBackground 
+              backgroundColor: themeColors.cardBackground,
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = themeColors.primary;
-              const icon = e.currentTarget.querySelector("#icon-bg-inventory") as HTMLElement;
+              const icon = e.currentTarget.querySelector(
+                "#icon-bg-inventory",
+              ) as HTMLElement;
               if (icon) {
                 icon.style.backgroundColor = themeColors.primary;
                 icon.style.color = "#FFFFFF";
@@ -346,18 +363,21 @@ export default function Dashboard() {
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.borderColor = themeColors.border;
-              const icon = e.currentTarget.querySelector("#icon-bg-inventory") as HTMLElement;
+              const icon = e.currentTarget.querySelector(
+                "#icon-bg-inventory",
+              ) as HTMLElement;
               if (icon) {
-                icon.style.backgroundColor = themeColors.sidebarActiveBackground;
+                icon.style.backgroundColor =
+                  themeColors.sidebarActiveBackground;
                 icon.style.color = themeColors.primary;
               }
             }}
           >
-            <div 
+            <div
               className="p-3 rounded-xl mb-4 transition-all duration-300"
-              style={{ 
+              style={{
                 backgroundColor: themeColors.sidebarActiveBackground,
-                color: themeColors.primary
+                color: themeColors.primary,
               }}
               id="icon-bg-inventory"
             >
@@ -373,7 +393,7 @@ export default function Dashboard() {
               View comprehensive details of all vehicles, history and current
               status.
             </p>
-            <div 
+            <div
               className="mt-auto flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest"
               style={{ color: themeColors.primary }}
             >

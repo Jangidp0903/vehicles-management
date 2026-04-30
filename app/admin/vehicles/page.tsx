@@ -93,7 +93,7 @@ export default function VehiclesPage() {
           <p className="text-xs" style={{ color: themeColors.textSecondary }}>
             {role === "TECHNICIAN"
               ? "Showing all vehicles currently assigned for repair."
-              : "Manage and track all fleet vehicles from here."}
+              : "Manage and track all vehicles from here."}
           </p>
         </div>
       </div>
@@ -120,17 +120,32 @@ export default function VehiclesPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center justify-between gap-2 px-3 sm:px-4 py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-all border-2 cursor-pointer shadow-sm`}
                 style={{
-                  backgroundColor: activeTab === tab.id ? themeColors.primary : themeColors.cardBackground,
-                  color: activeTab === tab.id ? "#FFFFFF" : themeColors.textSecondary,
-                  borderColor: activeTab === tab.id ? themeColors.primary : themeColors.border,
+                  backgroundColor:
+                    activeTab === tab.id
+                      ? themeColors.primary
+                      : themeColors.cardBackground,
+                  color:
+                    activeTab === tab.id
+                      ? "#FFFFFF"
+                      : themeColors.textSecondary,
+                  borderColor:
+                    activeTab === tab.id
+                      ? themeColors.primary
+                      : themeColors.border,
                 }}
               >
                 {tab.label}
                 <span
                   className={`px-1.5 py-0.5 rounded-md text-[10px]`}
                   style={{
-                    backgroundColor: activeTab === tab.id ? "rgba(255,255,255,0.2)" : themeColors.background,
-                    color: activeTab === tab.id ? "#FFFFFF" : themeColors.textSecondary,
+                    backgroundColor:
+                      activeTab === tab.id
+                        ? "rgba(255,255,255,0.2)"
+                        : themeColors.background,
+                    color:
+                      activeTab === tab.id
+                        ? "#FFFFFF"
+                        : themeColors.textSecondary,
                   }}
                 >
                   {count}
@@ -155,10 +170,14 @@ export default function VehiclesPage() {
             style={{
               borderColor: themeColors.border,
               backgroundColor: themeColors.cardBackground,
-              color: themeColors.textPrimary
+              color: themeColors.textPrimary,
             }}
-            onFocus={(e) => e.currentTarget.style.borderColor = themeColors.primary}
-            onBlur={(e) => e.currentTarget.style.borderColor = themeColors.border}
+            onFocus={(e) =>
+              (e.currentTarget.style.borderColor = themeColors.primary)
+            }
+            onBlur={(e) =>
+              (e.currentTarget.style.borderColor = themeColors.border)
+            }
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -213,11 +232,11 @@ export default function VehiclesPage() {
                         size={32}
                         style={{ color: themeColors.primary }}
                       />
-                      <span 
+                      <span
                         className="text-sm font-medium"
                         style={{ color: themeColors.textSecondary }}
                       >
-                        Loading fleet data...
+                        Loading Vehicle data...
                       </span>
                     </div>
                   </td>
@@ -227,16 +246,22 @@ export default function VehiclesPage() {
                   <tr
                     key={vehicle._id}
                     className="transition-colors group cursor-pointer"
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = themeColors.background}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.backgroundColor =
+                        themeColors.background)
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.backgroundColor = "transparent")
+                    }
                   >
                     <td className="px-4 py-2.5">
                       <div className="flex items-center gap-2">
-                        <div 
+                        <div
                           className="p-1.5 rounded-lg"
-                          style={{ 
-                            backgroundColor: themeColors.sidebarActiveBackground,
-                            color: themeColors.primary 
+                          style={{
+                            backgroundColor:
+                              themeColors.sidebarActiveBackground,
+                            color: themeColors.primary,
                           }}
                         >
                           <Bike size={14} />
