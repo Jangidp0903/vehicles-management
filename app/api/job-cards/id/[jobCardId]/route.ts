@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/db";
 import JobCard from "@/models/JobCard";
+import Vehicle from "@/models/Vehicle";
 
 export async function PATCH(
   request: Request,
@@ -23,6 +24,13 @@ export async function PATCH(
         { status: 404 }
       );
     }
+
+    // Sync vehicle status based on inspection result
+    const vehicleStatus = updatedJobCard.inspection.isDamaged ? "DAMAGED" : "AVAILABLE";
+    await Vehicle.findOneAndUpdate(
+      { vehicleId: updatedJobCard.vehicleId },
+      { $set: { status: vehicleStatus } }
+    );
 
     return NextResponse.json({
       success: true,

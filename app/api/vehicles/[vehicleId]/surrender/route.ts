@@ -45,11 +45,11 @@ export async function POST(
       inspection: {
         odometer: odometer,
         checklist: {
-          bodyAndFrame: { status: null, notes: "", photos: [] },
-          tyresAndWheels: { status: null, notes: "", photos: [] },
-          batteryAndCables: { status: null, notes: "", photos: [] },
-          lightsAndIndicators: { status: null, notes: "", photos: [] },
-          brakes: { status: null, notes: "", photos: [] }
+          bodyAndFrame: { status: null, notes: "", photo: "" },
+          tyresAndWheels: { status: null, notes: "", photo: "" },
+          batteryAndCables: { status: null, notes: "", photo: "" },
+          lightsAndIndicators: { status: null, notes: "", photo: "" },
+          brakes: { status: null, notes: "", photo: "" }
         },
         isDamaged: false,
         notes: ""
