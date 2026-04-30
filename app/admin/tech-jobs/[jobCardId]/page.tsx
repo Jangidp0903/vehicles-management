@@ -331,94 +331,83 @@ export default function JobCardDetailsPage() {
 
         {/* Repair & Completion Section */}
         <div
-          className="p-6 rounded-3xl border-2 space-y-6 bg-gray-900 text-white shadow-2xl relative overflow-hidden"
+          className="rounded-2xl border-2 overflow-hidden bg-gradient-to-br from-gray-900 to-black text-white shadow-xl relative"
           style={{ borderColor: themeColors.border }}
         >
-          {/* Subtle Background Pattern */}
-          <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-            <Wrench size={120} />
-          </div>
-
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
+          {/* Header Bar */}
+          <div className="px-4 py-3 border-b border-white/10 bg-white/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="p-3 rounded-2xl bg-white/5 border border-white/10 text-emerald-400">
-                <Wrench size={24} />
+              <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <Wrench size={18} />
               </div>
               <div>
-                <h2 className="text-sm font-black uppercase tracking-[0.2em] text-gray-400">
+                <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 leading-none">
                   Repair Workorder
                 </h2>
-                <p className="text-xs text-gray-500 font-bold uppercase mt-1">
+                <p className="text-[9px] text-gray-500 font-bold uppercase mt-1">
                   Authorized Maintenance Task
                 </p>
               </div>
             </div>
-            <div className="bg-white/5 p-4 rounded-2xl border border-white/10 flex items-center gap-6">
-              <div className="text-center">
-                <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">
-                  Labour
-                </p>
-                <p className="text-sm font-black">₹ 1,000</p>
+            
+            <div className="flex items-center gap-3 sm:gap-4 bg-black/40 px-3 py-1.5 rounded-xl border border-white/5 w-full sm:w-auto justify-between sm:justify-end">
+              <div className="text-left sm:text-right">
+                <p className="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Labour</p>
+                <p className="text-xs font-bold text-gray-300">₹1,000</p>
               </div>
-              <div className="w-[1px] h-8 bg-white/10" />
+              <div className="w-[1px] h-6 bg-white/10" />
               <div className="text-right">
-                <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1">
-                  Total Due
-                </p>
-                <p className="text-2xl font-black text-emerald-400 leading-none">
-                  ₹ {jobCard.repairDetails.estimatedCost.toLocaleString()}
-                </p>
+                <p className="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Est. Total</p>
+                <p className="text-sm font-black text-emerald-400">₹ {jobCard.repairDetails.estimatedCost.toLocaleString()}</p>
               </div>
             </div>
           </div>
 
-          <div className="space-y-4">
-            <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-widest">
-              Selected Components for Repair
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="p-4 space-y-4">
+            {/* Parts List */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
               {jobCard.repairDetails.parts.map((part, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+                  className="flex flex-col p-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group"
                 >
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                    <span className="text-xs font-bold">{part.partName}</span>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                    <span className="text-[10px] font-bold text-gray-300 truncate">{part.partName}</span>
                   </div>
-                  <span className="text-[11px] font-black text-gray-400 font-mono">
+                  <span className="text-[10px] font-black text-emerald-500/80 font-mono">
                     ₹{part.price.toLocaleString()}
                   </span>
                 </div>
               ))}
             </div>
-          </div>
 
-          {/* Completion Action */}
-          <div className="pt-4">
-            {jobCard.status !== "CLOSED" ? (
-              <button
-                onClick={handleCompleteRepair}
-                disabled={completing}
-                className="w-full py-5 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-sm uppercase tracking-[0.3em] transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3 cursor-pointer shadow-2xl shadow-emerald-500/40 border-b-4 border-emerald-700"
-              >
-                {completing ? (
-                  <Loader2 size={24} className="animate-spin" />
-                ) : (
-                  <>
-                    <CheckCircle2 size={24} />
-                    Confirm & Complete Repair
-                  </>
-                )}
-              </button>
-            ) : (
-              <div className="w-full py-5 rounded-2xl bg-emerald-500/10 border-2 border-emerald-500/50 flex items-center justify-center gap-3">
-                <CheckCircle2 size={24} className="text-emerald-500" />
-                <span className="text-emerald-500 font-black uppercase tracking-widest text-sm">
-                  Maintenance Completed
-                </span>
-              </div>
-            )}
+            {/* Completion Action */}
+            <div className="pt-2">
+              {jobCard.status !== "CLOSED" ? (
+                <button
+                  onClick={handleCompleteRepair}
+                  disabled={completing}
+                  className="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-[11px] uppercase tracking-[0.2em] transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-emerald-500/20 border-b-2 border-emerald-700"
+                >
+                  {completing ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : (
+                    <>
+                      <CheckCircle2 size={16} />
+                      Confirm & Complete Repair
+                    </>
+                  )}
+                </button>
+              ) : (
+                <div className="w-full py-3 rounded-xl bg-emerald-500/5 border border-emerald-500/20 flex items-center justify-center gap-2">
+                  <CheckCircle2 size={16} className="text-emerald-500" />
+                  <span className="text-emerald-500 font-black uppercase tracking-widest text-[10px]">
+                    Maintenance Completed
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
