@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IChecklistItem {
-  status: "OK" | "DAMAGED" | null;
+  status: "OK" | "DAMAGED" | "WEAR" | "MISSING" | null;
   notes?: string;
   photo?: string;
 }
@@ -49,7 +49,7 @@ const JobCardSchema: Schema = new Schema(
         bodyAndFrame: {
           status: {
             type: String,
-            enum: ["OK", "DAMAGED", null],
+            enum: ["OK", "DAMAGED", "WEAR", "MISSING", null],
             default: null,
           },
           notes: { type: String },
@@ -59,7 +59,7 @@ const JobCardSchema: Schema = new Schema(
         tyresAndWheels: {
           status: {
             type: String,
-            enum: ["OK", "DAMAGED", null],
+            enum: ["OK", "DAMAGED", "WEAR", "MISSING", null],
             default: null,
           },
           notes: { type: String },
@@ -69,7 +69,7 @@ const JobCardSchema: Schema = new Schema(
         batteryAndCables: {
           status: {
             type: String,
-            enum: ["OK", "DAMAGED", null],
+            enum: ["OK", "DAMAGED", "WEAR", "MISSING", null],
             default: null,
           },
           notes: { type: String },
@@ -79,7 +79,7 @@ const JobCardSchema: Schema = new Schema(
         lightsAndIndicators: {
           status: {
             type: String,
-            enum: ["OK", "DAMAGED", null],
+            enum: ["OK", "DAMAGED", "WEAR", "MISSING", null],
             default: null,
           },
           notes: { type: String },
@@ -89,7 +89,7 @@ const JobCardSchema: Schema = new Schema(
         brakes: {
           status: {
             type: String,
-            enum: ["OK", "DAMAGED", null],
+            enum: ["OK", "DAMAGED", "WEAR", "MISSING", null],
             default: null,
           },
           notes: { type: String },

@@ -25,7 +25,7 @@ import { useRole } from "@/lib/RoleContext";
 import AccessDenied from "@/components/AccessDenied";
 
 interface ChecklistItem {
-  status: "OK" | "DAMAGED" | null;
+  status: "OK" | "DAMAGED" | "WEAR" | "MISSING" | null;
   notes?: string;
   photo?: string;
 }
@@ -135,7 +135,7 @@ export default function InspectionPage() {
     if (vehicleId) fetchData();
   }, [vehicleId]);
 
-  const updateItemStatus = (id: string, status: "OK" | "DAMAGED") => {
+  const updateItemStatus = (id: string, status: "OK" | "DAMAGED" | "WEAR" | "MISSING") => {
     setChecklist(prev => ({
       ...prev,
       [id]: { ...prev[id], status }
@@ -183,16 +183,22 @@ export default function InspectionPage() {
       return;
     }
 
-    const missingNotes = INSPECTION_ITEMS.find(item => checklist[item.id].status === "DAMAGED" && !checklist[item.id].notes?.trim());
+    const missingNotes = INSPECTION_ITEMS.find(item => {
+      const status = checklist[item.id].status;
+      return (status === "DAMAGED" || status === "WEAR" || status === "MISSING") && 
+             !checklist[item.id].notes?.trim();
+    });
     if (missingNotes) {
-      showError("Notes Required", `Please provide notes for the damaged item: ${missingNotes.label}`);
+      showError("Notes Required", `Please provide notes for: ${missingNotes.label}`);
       return;
     }
 
     setSaving(true);
     showLoading("Submitting", "Recording inspection results...");
     try {
-      const isDamaged = Object.values(checklist).some(item => item.status === "DAMAGED");
+      const isDamaged = Object.values(checklist).some(item => 
+        item.status === "DAMAGED" || item.status === "WEAR" || item.status === "MISSING"
+      );
       const jobCardStatus = isDamaged ? "IN_PROGRESS" : "CLOSED";
       
       await axios.patch(`/api/job-cards/id/${jobCard.jobCardId}`, {
@@ -293,22 +299,39 @@ export default function InspectionPage() {
                 <div className="flex items-center gap-2">
                   <button 
                     onClick={() => updateItemStatus(item.id, "OK")}
-                    className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-lg font-bold text-[10px] uppercase tracking-widest transition border-2 cursor-pointer ${state.status === "OK" ? "bg-emerald-50 border-emerald-500 text-emerald-600" : "bg-white border-gray-100 text-gray-400 hover:border-gray-200"}`}
+                    className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg font-bold text-[9px] uppercase tracking-widest transition border-2 cursor-pointer ${state.status === "OK" ? "bg-emerald-50 border-emerald-500 text-emerald-600" : "bg-white border-gray-100 text-gray-400 hover:border-gray-200"}`}
                   >
-                    {state.status === "OK" ? <CheckCircle size={14} /> : <Circle size={14} />}
+                    {state.status === "OK" ? <CheckCircle size={12} /> : <Circle size={12} />}
                     OK
                   </button>
+
+                  <button 
+                    onClick={() => updateItemStatus(item.id, "WEAR")}
+                    className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg font-bold text-[9px] uppercase tracking-widest transition border-2 cursor-pointer ${state.status === "WEAR" ? "bg-orange-50 border-orange-400 text-orange-600" : "bg-white border-gray-100 text-gray-400 hover:border-gray-200"}`}
+                  >
+                    {state.status === "WEAR" ? <AlertTriangle size={12} /> : <Circle size={12} />}
+                    Wear
+                  </button>
+
                   <button 
                     onClick={() => updateItemStatus(item.id, "DAMAGED")}
-                    className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-lg font-bold text-[10px] uppercase tracking-widest transition border-2 cursor-pointer ${state.status === "DAMAGED" ? "bg-red-50 border-red-500 text-red-600" : "bg-white border-gray-100 text-gray-400 hover:border-gray-200"}`}
+                    className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg font-bold text-[9px] uppercase tracking-widest transition border-2 cursor-pointer ${state.status === "DAMAGED" ? "bg-red-50 border-red-500 text-red-600" : "bg-white border-gray-100 text-gray-400 hover:border-gray-200"}`}
                   >
-                    {state.status === "DAMAGED" ? <AlertTriangle size={14} /> : <Circle size={14} />}
-                    Damaged
+                    {state.status === "DAMAGED" ? <AlertTriangle size={12} /> : <Circle size={12} />}
+                    Damage
+                  </button>
+
+                  <button 
+                    onClick={() => updateItemStatus(item.id, "MISSING")}
+                    className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg font-bold text-[9px] uppercase tracking-widest transition border-2 cursor-pointer ${state.status === "MISSING" ? "bg-gray-100 border-gray-600 text-gray-700" : "bg-white border-gray-100 text-gray-400 hover:border-gray-200"}`}
+                  >
+                    {state.status === "MISSING" ? <X size={12} /> : <Circle size={12} />}
+                    Missing
                   </button>
                 </div>
               </div>
 
-              {state.status === "DAMAGED" && (
+              {(state.status === "DAMAGED" || state.status === "WEAR" || state.status === "MISSING") && (
                 <div className="space-y-4 pt-4 border-t animate-in fade-in slide-in-from-top-2 duration-300" style={{ borderColor: themeColors.border }}>
                   <div className="space-y-1.5">
                     <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Damage Notes</label>
@@ -385,7 +408,15 @@ export default function InspectionPage() {
           onClose={() => router.push("/admin/dashboard")}
           jobCardId={jobCard.jobCardId}
           vehicleId={vehicle.vehicleId}
-          damagedItems={INSPECTION_ITEMS.filter(item => checklist[item.id].status === "DAMAGED").map(item => item.id)}
+          damagedItems={INSPECTION_ITEMS.filter(item => 
+            checklist[item.id].status === "DAMAGED" || 
+            checklist[item.id].status === "WEAR" || 
+            checklist[item.id].status === "MISSING"
+          ).map(item => item.id)}
+          itemStatuses={Object.keys(checklist).reduce((acc, key) => {
+            if (checklist[key].status) acc[key] = checklist[key].status!;
+            return acc;
+          }, {} as Record<string, string>)}
           onSuccess={() => router.push("/admin/dashboard")}
         />
       )}

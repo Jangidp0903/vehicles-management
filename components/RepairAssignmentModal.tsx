@@ -40,6 +40,7 @@ interface RepairAssignmentModalProps {
   vehicleId: string;
   damagedItems: string[];
   onSuccess: () => void;
+  itemStatuses?: Record<string, string>;
 }
 
 const RepairAssignmentModal: React.FC<RepairAssignmentModalProps> = ({
@@ -48,6 +49,7 @@ const RepairAssignmentModal: React.FC<RepairAssignmentModalProps> = ({
   jobCardId,
   damagedItems,
   onSuccess,
+  itemStatuses = {},
 }) => {
   const [technicians, setTechnicians] = useState<Technician[]>([]);
   const [selectedTechnician, setSelectedTechnician] = useState("");
@@ -197,9 +199,22 @@ const RepairAssignmentModal: React.FC<RepairAssignmentModalProps> = ({
                     ) : (
                       <Square size={18} className="text-gray-300" />
                     )}
-                    <span className="text-xs font-semibold text-gray-700">
-                      {part.label}
-                    </span>
+                    <div className="flex flex-col">
+                      <span className="text-xs font-semibold text-gray-700">
+                        {part.label}
+                      </span>
+                      {itemStatuses[part.id] && (
+                        <span 
+                          className={`text-[8px] font-black uppercase tracking-tighter w-fit px-1 rounded mt-0.5 ${
+                            itemStatuses[part.id] === "WEAR" ? "bg-orange-100 text-orange-600" :
+                            itemStatuses[part.id] === "MISSING" ? "bg-gray-200 text-gray-700" :
+                            "bg-red-100 text-red-600"
+                          }`}
+                        >
+                          {itemStatuses[part.id]}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <span className="text-xs font-bold text-gray-400">
                     ₹ {part.price.toLocaleString()}

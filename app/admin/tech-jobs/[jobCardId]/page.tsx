@@ -19,7 +19,7 @@ import { useNotification } from "@/lib/NotificationContext";
 import AccessDenied from "@/components/AccessDenied";
 
 interface ChecklistItem {
-  status: "OK" | "DAMAGED" | null;
+  status: "OK" | "DAMAGED" | "WEAR" | "MISSING" | null;
   notes?: string;
   photo?: string;
 }
@@ -291,26 +291,44 @@ export default function JobCardDetailsPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {Object.entries(jobCard.inspection.checklist).map(([key, item]) => (
-              <div
-                key={key}
-                className={`p-3 rounded-xl border-2 transition-all hover:shadow-md ${item.status === "DAMAGED" ? "border-red-100 bg-red-50/10" : "border-gray-50 bg-gray-50/20"}`}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-black text-gray-700 uppercase tracking-tight truncate mr-2">
-                    {key.replace(/([A-Z])/g, " $1").trim()}
-                  </span>
-                  <span
-                    className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase ${item.status === "DAMAGED" ? "bg-red-500 text-white" : "bg-emerald-500 text-white"}`}
-                  >
-                    {item.status || "N/A"}
-                  </span>
-                </div>
+                <div
+                  key={key}
+                  className={`p-3 rounded-xl border-2 transition-all hover:shadow-md ${
+                    item.status === "DAMAGED" ? "border-red-100 bg-red-50/10" : 
+                    item.status === "WEAR" ? "border-orange-100 bg-orange-50/10" :
+                    item.status === "MISSING" ? "border-gray-200 bg-gray-50/50" :
+                    "border-gray-50 bg-gray-50/20"
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-black text-gray-700 uppercase tracking-tight truncate mr-2">
+                      {key.replace(/([A-Z])/g, " $1").trim()}
+                    </span>
+                    <span
+                      className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase ${
+                        item.status === "DAMAGED" ? "bg-red-500 text-white" : 
+                        item.status === "WEAR" ? "bg-orange-500 text-white" :
+                        item.status === "MISSING" ? "bg-gray-700 text-white" :
+                        "bg-emerald-500 text-white"
+                      }`}
+                    >
+                      {item.status || "N/A"}
+                    </span>
+                  </div>
 
-                {item.status === "DAMAGED" && (
+                  {(item.status === "DAMAGED" || item.status === "WEAR" || item.status === "MISSING") && (
                   <div className="space-y-2">
                     {item.notes && (
-                      <div className="p-2 bg-red-50/50 rounded-lg border border-red-100">
-                        <p className="text-[9px] font-bold text-red-600 italic">
+                      <div className={`p-2 rounded-lg border ${
+                        item.status === "DAMAGED" ? "bg-red-50/50 border-red-100" :
+                        item.status === "WEAR" ? "bg-orange-50/50 border-orange-100" :
+                        "bg-gray-100/50 border-gray-200"
+                      }`}>
+                        <p className={`text-[9px] font-bold italic ${
+                          item.status === "DAMAGED" ? "text-red-600" :
+                          item.status === "WEAR" ? "text-orange-600" :
+                          "text-gray-600"
+                        }`}>
                           &quot;{item.notes}&quot;
                         </p>
                       </div>
