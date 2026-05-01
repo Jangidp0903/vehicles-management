@@ -9,6 +9,8 @@ import {
   Loader2,
   AlertCircle,
   Settings,
+  Package,
+  PackageX,
 } from "lucide-react";
 import axios from "axios";
 import { themeColors } from "@/lib/themeColors";
@@ -59,6 +61,7 @@ const RepairAssignmentModal: React.FC<RepairAssignmentModalProps> = ({
   const [fetchingTechs, setFetchingTechs] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isTechDropdownOpen, setIsTechDropdownOpen] = useState(false);
+  const [partsAvailability, setPartsAvailability] = useState<Record<string, boolean>>({});
 
   const fetchTechnicians = React.useCallback(async () => {
     setFetchingTechs(true);
@@ -80,14 +83,30 @@ const RepairAssignmentModal: React.FC<RepairAssignmentModalProps> = ({
       queueMicrotask(() => {
         fetchTechnicians();
         setSelectedParts(damagedItems);
+        // Initialize availability
+        const initialAvail: Record<string, boolean> = {};
+        damagedItems.forEach(id => initialAvail[id] = true);
+        setPartsAvailability(initialAvail);
       });
     }
   }, [isOpen, damagedItems, fetchTechnicians]);
 
   const togglePart = (id: string) => {
-    setSelectedParts((prev) =>
-      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id],
-    );
+    setSelectedParts((prev) => {
+      const isSelected = prev.includes(id);
+      if (isSelected) {
+        return prev.filter((p) => p !== id);
+      } else {
+        // If selecting a new part, default its availability to true
+        setPartsAvailability(prevAvail => ({ ...prevAvail, [id]: true }));
+        return [...prev, id];
+      }
+    });
+  };
+
+  const toggleAvailability = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation(); // Don't deselect the part when clicking the toggle
+    setPartsAvailability(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
   const partsTotal = selectedParts.reduce((acc, partId) => {
@@ -119,6 +138,8 @@ const RepairAssignmentModal: React.FC<RepairAssignmentModalProps> = ({
         };
       });
 
+      const hasOutOfStock = selectedParts.some(id => !partsAvailability[id]);
+
       // Update Job Card and Vehicle Status
       await axios.patch(`/api/job-cards/id/${jobCardId}`, {
         technicianId: selectedTechnician,
@@ -128,7 +149,11 @@ const RepairAssignmentModal: React.FC<RepairAssignmentModalProps> = ({
           labourCost: labourCost,
           estimatedCost: estimatedTotal,
         },
-        status: "IN_PROGRESS",
+        partsAvailability: selectedParts.map(id => ({
+          partName: PART_PRICES.find(p => p.id === id)?.label || id,
+          isAvailable: !!partsAvailability[id]
+        })),
+        status: hasOutOfStock ? "ON_HOLD" : "IN_PROGRESS",
       });
 
       onSuccess();
@@ -218,9 +243,33 @@ const RepairAssignmentModal: React.FC<RepairAssignmentModalProps> = ({
                       )}
                     </div>
                   </div>
-                  <span className="text-xs font-bold text-gray-400">
-                    ₹ {part.price.toLocaleString()}
-                  </span>
+                  <div className="flex flex-col items-end gap-2">
+                    <span className="text-xs font-bold text-gray-400">
+                      ₹ {part.price.toLocaleString()}
+                    </span>
+                    {selectedParts.includes(part.id) && (
+                      <button
+                        onClick={(e) => toggleAvailability(e, part.id)}
+                        className={`flex items-center gap-1.5 px-2 py-1 rounded-lg border text-[8px] font-black uppercase transition-all cursor-pointer ${
+                          partsAvailability[part.id] 
+                            ? "bg-emerald-50 text-emerald-600 border-emerald-100" 
+                            : "bg-orange-50 text-orange-600 border-orange-100 shadow-[0_0_10px_rgba(249,115,22,0.1)]"
+                        }`}
+                      >
+                        {partsAvailability[part.id] ? (
+                          <>
+                            <Package size={10} />
+                            In Stock
+                          </>
+                        ) : (
+                          <>
+                            <PackageX size={10} />
+                            Out of Stock
+                          </>
+                        )}
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>

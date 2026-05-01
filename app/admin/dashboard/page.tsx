@@ -14,6 +14,7 @@ import {
   LayoutDashboard,
   ClipboardCheck,
   AlertTriangle,
+  PackageX,
 } from "lucide-react";
 import SurrenderModal from "@/components/SurrenderModal";
 import { useRole } from "@/lib/RoleContext";
@@ -27,6 +28,7 @@ interface Stats {
   UNDER_REPAIR: number;
   RFD: number;
   AVAILABLE_FOR_REDEPLOYMENT: number;
+  PENDING_PARTS: number;
   TOTAL: number;
 }
 
@@ -98,6 +100,13 @@ export default function Dashboard() {
       value: stats?.UNDER_REPAIR || 0,
       icon: <Wrench size={18} />,
       color: "#F59E0B", // amber-500
+      textColor: "text-white",
+    },
+    {
+      label: "Pending Parts",
+      value: stats?.PENDING_PARTS || 0,
+      icon: <PackageX size={18} />,
+      color: "#F97316", // orange-500
       textColor: "text-white",
     },
     {

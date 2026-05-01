@@ -72,6 +72,8 @@ export default function VehiclesPage() {
         return "#F59E0B"; // Amber
       case "UNDER_INSPECTION":
         return "#10B981"; // Emerald
+      case "PENDING_PARTS":
+        return "#F97316"; // Orange
       case "UNDER_REPAIR":
         return "#EF4444"; // Red
       case "DAMAGED":
@@ -110,6 +112,7 @@ export default function VehiclesPage() {
             { id: "RENTED", label: "Rented" },
             { id: "UNDER_INSPECTION", label: "In Inspection" },
             { id: "UNDER_REPAIR", label: "In Repair" },
+            { id: "PENDING_PARTS", label: "Pending Parts" },
             { id: "DAMAGED", label: "Damaged" },
           ].map((tab) => {
             const count =

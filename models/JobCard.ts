@@ -37,7 +37,12 @@ export interface IJobCard extends Document {
     closedAt?: Date;
   };
 
-  status: "OPEN" | "IN_PROGRESS" | "CLOSED";
+  partsAvailability: {
+    partName: string;
+    isAvailable: boolean;
+  }[];
+
+  status: "OPEN" | "IN_PROGRESS" | "CLOSED" | "ON_HOLD";
 }
 
 const JobCardSchema: Schema = new Schema(
@@ -123,9 +128,16 @@ const JobCardSchema: Schema = new Schema(
       closedAt: { type: Date },
     },
 
+    partsAvailability: [
+      {
+        partName: { type: String },
+        isAvailable: { type: Boolean, default: true },
+      },
+    ],
+
     status: {
       type: String,
-      enum: ["OPEN", "IN_PROGRESS", "CLOSED"],
+      enum: ["OPEN", "IN_PROGRESS", "CLOSED", "ON_HOLD"],
       default: "OPEN",
     },
   },

@@ -15,6 +15,8 @@ import {
   X,
   Calculator,
   Settings,
+  PackageX,
+  AlertTriangle,
 } from "lucide-react";
 import { themeColors } from "@/lib/themeColors";
 import { useRole } from "@/lib/RoleContext";
@@ -43,6 +45,10 @@ interface JobCard {
     parts: { partName: string; price: number }[];
     estimatedCost: number;
   };
+  partsAvailability?: {
+    partName: string;
+    isAvailable: boolean;
+  }[];
   closure?: {
     partsCost: number;
     labourCost: number;
@@ -72,10 +78,6 @@ export default function JobCardDetailsPage() {
   const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false);
   const [partsCost, setPartsCost] = useState<string>("");
   const [labourCost, setLabourCost] = useState<string>("1000"); // Default labour cost
-
-  if (role !== "TECHNICIAN") {
-    return <AccessDenied requiredRole="TECHNICIAN" />;
-  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -144,6 +146,10 @@ export default function JobCardDetailsPage() {
       setCompleting(false);
     }
   };
+
+  if (role !== "TECHNICIAN") {
+    return <AccessDenied requiredRole="TECHNICIAN" />;
+  }
 
   if (loading) {
     return (
@@ -442,6 +448,27 @@ export default function JobCardDetailsPage() {
             </div>
           </div>
 
+          {jobCard.status === "ON_HOLD" && (
+            <div className="mx-4 mt-4 p-4 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-start gap-4 animate-pulse">
+              <div className="p-2.5 rounded-xl bg-orange-500 text-white shadow-lg shadow-orange-500/20">
+                <PackageX size={20} />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-sm font-black text-orange-400 uppercase tracking-tight">Parts Unavailable</h3>
+                <p className="text-[10px] font-bold text-orange-200/60 uppercase leading-relaxed">
+                  Some required parts are currently out of stock. Maintenance completion is disabled until inventory is restocked.
+                </p>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {jobCard.partsAvailability?.filter(p => !p.isAvailable).map((p, i) => (
+                    <span key={i} className="px-2 py-0.5 rounded-md bg-orange-500/20 text-orange-400 text-[8px] font-black uppercase border border-orange-500/30">
+                      {p.partName}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="p-4 space-y-4">
             {/* Parts List */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
@@ -490,15 +517,19 @@ export default function JobCardDetailsPage() {
               {jobCard.status !== "CLOSED" ? (
                 <button
                   onClick={() => setIsCompletionModalOpen(true)}
-                  disabled={completing}
-                  className="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-[11px] uppercase tracking-[0.2em] transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-emerald-500/20 border-b-2 border-emerald-700"
+                  disabled={completing || jobCard.status === "ON_HOLD"}
+                  className={`w-full py-3.5 rounded-xl text-white font-black text-[11px] uppercase tracking-[0.2em] transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer shadow-lg border-b-2 ${
+                    jobCard.status === "ON_HOLD" 
+                      ? "bg-gray-700 border-gray-900 opacity-50 cursor-not-allowed grayscale" 
+                      : "bg-emerald-500 hover:bg-emerald-600 border-emerald-700 shadow-emerald-500/20"
+                  }`}
                 >
                   {completing ? (
                     <Loader2 size={16} className="animate-spin" />
                   ) : (
                     <>
-                      <CheckCircle2 size={16} />
-                      Confirm & Complete Repair
+                      {jobCard.status === "ON_HOLD" ? <AlertTriangle size={16} /> : <CheckCircle2 size={16} />}
+                      {jobCard.status === "ON_HOLD" ? "Awaiting Parts..." : "Confirm & Complete Repair"}
                     </>
                   )}
                 </button>

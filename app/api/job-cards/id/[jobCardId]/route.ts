@@ -29,7 +29,9 @@ export async function PATCH(
     // Sync status logic
     let vehicleStatus: string = updatedJobCard.inspection.isDamaged ? "DAMAGED" : "AVAILABLE_FOR_REDEPLOYMENT";
 
-    if (updatedJobCard.status === "CLOSED") {
+    if (updatedJobCard.status === "ON_HOLD") {
+      vehicleStatus = "PENDING_PARTS";
+    } else if (updatedJobCard.status === "CLOSED") {
       vehicleStatus = "AVAILABLE_FOR_REDEPLOYMENT";
       // Mark technician as available again when job is closed
       if (updatedJobCard.technicianId) {

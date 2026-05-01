@@ -25,6 +25,7 @@ export async function GET() {
       UNDER_REPAIR: 0,
       RFD: 0,
       AVAILABLE_FOR_REDEPLOYMENT: 0,
+      PENDING_PARTS: 0,
       TOTAL: totalVehicles
     };
 

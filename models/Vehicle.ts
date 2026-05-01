@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IVehicle extends Document {
   vehicleId: string; // Human readable ID like ZOM-EV-001
   modelName?: string;
-  status: "RENTED" | "UNDER_INSPECTION" | "DAMAGED" | "UNDER_REPAIR" | "RFD" | "AVAILABLE_FOR_REDEPLOYMENT";
+  status: "RENTED" | "UNDER_INSPECTION" | "DAMAGED" | "UNDER_REPAIR" | "RFD" | "AVAILABLE_FOR_REDEPLOYMENT" | "PENDING_PARTS";
   currentOdometer?: number;
 }
 
@@ -13,7 +13,7 @@ const VehicleSchema: Schema = new Schema(
     modelName: { type: String },
     status: {
       type: String,
-      enum: ["RENTED", "UNDER_INSPECTION", "DAMAGED", "UNDER_REPAIR", "RFD", "AVAILABLE_FOR_REDEPLOYMENT"],
+      enum: ["RENTED", "UNDER_INSPECTION", "DAMAGED", "UNDER_REPAIR", "RFD", "AVAILABLE_FOR_REDEPLOYMENT", "PENDING_PARTS"],
       default: "RFD",
     },
     currentOdometer: { type: Number, default: 0 },
