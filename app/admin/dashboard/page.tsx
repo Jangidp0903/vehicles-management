@@ -26,6 +26,7 @@ interface Stats {
   DAMAGED: number;
   UNDER_REPAIR: number;
   RFD: number;
+  AVAILABLE_FOR_REDEPLOYMENT: number;
   TOTAL: number;
 }
 
@@ -75,7 +76,14 @@ export default function Dashboard() {
       label: "Ready for Delivery",
       value: stats?.RFD || 0,
       icon: <CheckCircle2 size={18} />,
-      color: "#10B981", // emerald-500
+      color: "#6366F1", // indigo-500
+      textColor: "text-white",
+    },
+    {
+      label: "Available (Redeployed)",
+      value: stats?.AVAILABLE_FOR_REDEPLOYMENT || 0,
+      icon: <CheckCircle2 size={18} />,
+      color: themeColors.success,
       textColor: "text-white",
     },
     {

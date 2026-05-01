@@ -24,6 +24,7 @@ export async function GET() {
       DAMAGED: 0,
       UNDER_REPAIR: 0,
       RFD: 0,
+      AVAILABLE_FOR_REDEPLOYMENT: 0,
       TOTAL: totalVehicles
     };
 

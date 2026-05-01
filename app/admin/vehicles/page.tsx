@@ -64,16 +64,18 @@ export default function VehiclesPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "RFD":
+      case "AVAILABLE_FOR_REDEPLOYMENT":
         return themeColors.success;
+      case "RFD":
+        return "#6366F1"; // Indigo for initial stock
       case "RENTED":
-        return "#2563EB";
-      case "DAMAGED":
-        return themeColors.error;
-      case "UNDER_REPAIR":
-        return "#D97706";
+        return "#F59E0B"; // Amber
       case "UNDER_INSPECTION":
-        return "#0EA5A4";
+        return "#10B981"; // Emerald
+      case "UNDER_REPAIR":
+        return "#EF4444"; // Red
+      case "DAMAGED":
+        return "#B91C1C"; // Dark Red
       default:
         return themeColors.textSecondary;
     }
@@ -104,6 +106,7 @@ export default function VehiclesPage() {
           {[
             { id: "ALL", label: "All Vehicles" },
             { id: "RFD", label: "RFD" },
+            { id: "AVAILABLE_FOR_REDEPLOYMENT", label: "Available" },
             { id: "RENTED", label: "Rented" },
             { id: "UNDER_INSPECTION", label: "In Inspection" },
             { id: "UNDER_REPAIR", label: "In Repair" },
