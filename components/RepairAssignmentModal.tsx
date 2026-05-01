@@ -124,6 +124,8 @@ const RepairAssignmentModal: React.FC<RepairAssignmentModalProps> = ({
         technicianId: selectedTechnician,
         repairDetails: {
           parts: repairParts,
+          partsCost: partsTotal,
+          labourCost: labourCost,
           estimatedCost: estimatedTotal,
         },
         status: "IN_PROGRESS",

@@ -12,6 +12,9 @@ import {
   AlertCircle,
   Camera,
   User,
+  X,
+  Calculator,
+  Settings,
 } from "lucide-react";
 import { themeColors } from "@/lib/themeColors";
 import { useRole } from "@/lib/RoleContext";
@@ -40,6 +43,12 @@ interface JobCard {
     parts: { partName: string; price: number }[];
     estimatedCost: number;
   };
+  closure?: {
+    partsCost: number;
+    labourCost: number;
+    finalCost: number;
+    closedAt?: string;
+  };
 }
 
 interface Vehicle {
@@ -60,6 +69,9 @@ export default function JobCardDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [completing, setCompleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false);
+  const [partsCost, setPartsCost] = useState<string>("");
+  const [labourCost, setLabourCost] = useState<string>("1000"); // Default labour cost
 
   if (role !== "TECHNICIAN") {
     return <AccessDenied requiredRole="TECHNICIAN" />;
@@ -73,6 +85,10 @@ export default function JobCardDetailsPage() {
         if (jRes.data.success) {
           const jc = jRes.data.data;
           setJobCard(jc);
+          
+          // Calculate initial parts total
+          const pTotal = jc.repairDetails.parts.reduce((acc: number, p: any) => acc + (p.price || 0), 0);
+          setPartsCost(pTotal.toString());
 
           const vRes = await axios.get(`/api/vehicles/${jc.vehicleId}`);
           if (vRes.data.success) {
@@ -93,26 +109,37 @@ export default function JobCardDetailsPage() {
   const handleCompleteRepair = async () => {
     if (!jobCard) return;
 
-    // Security check
-    if (role === "TECHNICIAN" && jobCard.technicianId !== technicianId) {
-      showError("Access Denied", "You are not assigned to this job card.");
-      return;
-    }
-
     setCompleting(true);
     showLoading("Processing", "Finalizing maintenance records...");
     try {
+      const pCost = Number(partsCost) || 0;
+      const lCost = Number(labourCost) || 0;
+      const fTotal = pCost + lCost;
+
       await axios.patch(`/api/job-cards/id/${jobCardId}`, {
         status: "CLOSED",
+        closure: {
+          partsCost: pCost,
+          labourCost: lCost,
+          finalCost: fTotal,
+          closedAt: new Date(),
+        },
       });
-      showSuccess("Repair Completed", "Vehicle is now RFD and cleared for operations.");
+      showSuccess(
+        "Repair Completed",
+        "Vehicle is now Available for Redeployment.",
+      );
+      setIsCompletionModalOpen(false);
       setTimeout(() => {
         hideNotification();
         router.push("/admin/tech-jobs");
       }, 2000);
     } catch (err) {
       console.error("Error completing repair:", err);
-      showError("Submission Failed", "There was an error updating the maintenance records. Please try again.");
+      showError(
+        "Submission Failed",
+        "There was an error updating the maintenance records.",
+      );
     } finally {
       setCompleting(false);
     }
@@ -382,15 +409,36 @@ export default function JobCardDetailsPage() {
             </div>
             
             <div className="flex items-center gap-3 sm:gap-4 bg-black/40 px-3 py-1.5 rounded-xl border border-white/5 w-full sm:w-auto justify-between sm:justify-end">
-              <div className="text-left sm:text-right">
-                <p className="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Labour</p>
-                <p className="text-xs font-bold text-gray-300">₹1,000</p>
-              </div>
-              <div className="w-[1px] h-6 bg-white/10" />
-              <div className="text-right">
-                <p className="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Est. Total</p>
-                <p className="text-sm font-black text-emerald-400">₹ {jobCard.repairDetails.estimatedCost.toLocaleString()}</p>
-              </div>
+              {jobCard.status === "CLOSED" ? (
+                <>
+                  <div className="text-left sm:text-right">
+                    <p className="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Parts</p>
+                    <p className="text-xs font-bold text-gray-300">₹{jobCard.closure?.partsCost?.toLocaleString() || "0"}</p>
+                  </div>
+                  <div className="w-[1px] h-6 bg-white/10" />
+                  <div className="text-left sm:text-right">
+                    <p className="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Labour</p>
+                    <p className="text-xs font-bold text-gray-300">₹{jobCard.closure?.labourCost?.toLocaleString() || "0"}</p>
+                  </div>
+                  <div className="w-[1px] h-6 bg-white/10" />
+                  <div className="text-right">
+                    <p className="text-[8px] font-bold text-emerald-500/60 uppercase tracking-widest">Final Total</p>
+                    <p className="text-sm font-black text-emerald-400">₹ {jobCard.closure?.finalCost?.toLocaleString() || "0"}</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="text-left sm:text-right">
+                    <p className="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Labour (Est)</p>
+                    <p className="text-xs font-bold text-gray-300">₹1,000</p>
+                  </div>
+                  <div className="w-[1px] h-6 bg-white/10" />
+                  <div className="text-right">
+                    <p className="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Est. Total</p>
+                    <p className="text-sm font-black text-emerald-400">₹ {jobCard.repairDetails.estimatedCost.toLocaleString()}</p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
@@ -413,11 +461,35 @@ export default function JobCardDetailsPage() {
               ))}
             </div>
 
+            {/* Financial Summary (When Closed) */}
+            {jobCard.status === "CLOSED" && jobCard.closure && (
+              <div className="mt-6 pt-6 border-t border-white/10 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                <div className="flex items-center gap-2 mb-4">
+                  <Calculator size={14} className="text-emerald-500" />
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Financial Summary</h3>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1">
+                    <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Final Parts Cost</p>
+                    <p className="text-lg font-black text-gray-200">₹ {(jobCard.closure?.partsCost || 0).toLocaleString()}</p>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1">
+                    <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Final Labour Cost</p>
+                    <p className="text-lg font-black text-gray-200">₹ {(jobCard.closure?.labourCost || 0).toLocaleString()}</p>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 space-y-1">
+                    <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Grand Total</p>
+                    <p className="text-lg font-black text-emerald-400">₹ {(jobCard.closure?.finalCost || 0).toLocaleString()}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Completion Action */}
             <div className="pt-2">
               {jobCard.status !== "CLOSED" ? (
                 <button
-                  onClick={handleCompleteRepair}
+                  onClick={() => setIsCompletionModalOpen(true)}
                   disabled={completing}
                   className="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-[11px] uppercase tracking-[0.2em] transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-emerald-500/20 border-b-2 border-emerald-700"
                 >
@@ -442,6 +514,122 @@ export default function JobCardDetailsPage() {
           </div>
         </div>
       </div>
+
+      {/* Completion Modal */}
+      {isCompletionModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div 
+            className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl border-2 animate-in zoom-in-95 duration-200"
+            style={{ borderColor: themeColors.border }}
+          >
+            {/* Modal Header */}
+            <div className="p-6 border-b bg-gray-50 flex items-center justify-between" style={{ borderColor: themeColors.border }}>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
+                  <Wrench size={20} />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-800 uppercase tracking-tight">Finalize Repair</h3>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">#{jobCard.jobCardId}</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsCompletionModalOpen(false)}
+                className="p-2 hover:bg-gray-100 rounded-full transition text-gray-400 cursor-pointer"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 space-y-5">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Estimated Total</p>
+                  <p className="text-lg font-black text-gray-700">₹ {jobCard.repairDetails.estimatedCost.toLocaleString()}</p>
+                </div>
+                <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100">
+                  <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-1">Final Total</p>
+                  <p className="text-lg font-black text-emerald-700">₹ {( (Number(partsCost) || 0) + (Number(labourCost) || 0) ).toLocaleString()}</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {/* Parts Cost Input */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                    <Settings size={12} />
+                    Final Parts Cost
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-gray-400">₹</span>
+                    <input
+                      type="text"
+                      value={partsCost}
+                      onChange={(e) => setPartsCost(e.target.value)}
+                      placeholder="0.00"
+                      className="w-full pl-8 pr-4 py-3.5 rounded-2xl border-2 text-sm font-black focus:outline-none transition-all placeholder:text-gray-200"
+                      style={{ 
+                        borderColor: themeColors.border,
+                        backgroundColor: themeColors.cardBackground
+                      }}
+                      onFocus={(e) => e.currentTarget.style.borderColor = themeColors.primary}
+                      onBlur={(e) => e.currentTarget.style.borderColor = themeColors.border}
+                    />
+                  </div>
+                </div>
+
+                {/* Labour Cost Input */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                    <User size={12} />
+                    Final Labour Cost
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-gray-400">₹</span>
+                    <input
+                      type="text"
+                      value={labourCost}
+                      onChange={(e) => setLabourCost(e.target.value)}
+                      placeholder="0.00"
+                      className="w-full pl-8 pr-4 py-3.5 rounded-2xl border-2 text-sm font-black focus:outline-none transition-all placeholder:text-gray-200"
+                      style={{ 
+                        borderColor: themeColors.border,
+                        backgroundColor: themeColors.cardBackground
+                      }}
+                      onFocus={(e) => e.currentTarget.style.borderColor = themeColors.primary}
+                      onBlur={(e) => e.currentTarget.style.borderColor = themeColors.border}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-[9px] font-bold text-gray-400 leading-relaxed italic text-center">
+                * Verify all charges before closing. Total will be calculated automatically.
+              </p>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 bg-gray-50 flex items-center gap-3">
+              <button 
+                onClick={() => setIsCompletionModalOpen(false)}
+                className="flex-1 py-3.5 rounded-2xl font-bold text-xs text-gray-500 bg-white border-2 hover:bg-gray-50 transition active:scale-95 cursor-pointer"
+                style={{ borderColor: themeColors.border }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleCompleteRepair}
+                disabled={completing || (!partsCost && !labourCost)}
+                className="flex-[1.5] py-3.5 rounded-2xl font-black text-xs text-white shadow-lg shadow-emerald-500/20 hover:opacity-90 transition active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
+                style={{ backgroundColor: "#10B981" }}
+              >
+                {completing ? <Loader2 size={16} className="animate-spin" /> : <><CheckCircle2 size={16} /> Close Job</>}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -25,10 +25,14 @@ export interface IJobCard extends Document {
 
   repairDetails: {
     parts: { partName: string; price: number }[];
+    partsCost: number;
+    labourCost: number;
     estimatedCost: number;
   };
 
   closure: {
+    partsCost: number;
+    labourCost: number;
     finalCost: number;
     closedAt?: Date;
   };
@@ -107,10 +111,14 @@ const JobCardSchema: Schema = new Schema(
           price: { type: Number },
         },
       ],
+      partsCost: { type: Number, default: 0 },
+      labourCost: { type: Number, default: 0 },
       estimatedCost: { type: Number, default: 0 },
     },
 
     closure: {
+      partsCost: { type: Number, default: 0 },
+      labourCost: { type: Number, default: 0 },
       finalCost: { type: Number, default: 0 },
       closedAt: { type: Date },
     },
