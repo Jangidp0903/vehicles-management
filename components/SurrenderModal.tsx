@@ -230,7 +230,7 @@ const SurrenderModal: React.FC<SurrenderModalProps> = ({ isOpen, onClose }) => {
                         <AlertTriangle size={14} />
                         <span className="text-[10px] font-bold">Already under inspection.</span>
                       </div>
-                    ) : (
+                    ) : vehicle.status === "RENTED" ? (
                       <button 
                         onClick={handleProceedToInspection}
                         disabled={!newOdometer || isNaN(Number(newOdometer))}
@@ -240,6 +240,13 @@ const SurrenderModal: React.FC<SurrenderModalProps> = ({ isOpen, onClose }) => {
                         Proceed to Inspection
                         <ChevronRight size={16} />
                       </button>
+                    ) : (
+                      <div className="flex items-center gap-2 text-red-600 bg-red-50 p-2 rounded-lg border border-red-200">
+                        <AlertTriangle size={14} />
+                        <span className="text-[10px] font-bold uppercase tracking-widest">
+                          Cannot surrender: {vehicle.status.replace("_", " ")}
+                        </span>
+                      </div>
                     )}
                   </div>
                 </div>
