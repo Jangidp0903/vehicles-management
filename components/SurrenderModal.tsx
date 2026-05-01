@@ -241,11 +241,22 @@ const SurrenderModal: React.FC<SurrenderModalProps> = ({ isOpen, onClose }) => {
                         <ChevronRight size={16} />
                       </button>
                     ) : (
-                      <div className="flex items-center gap-2 text-red-600 bg-red-50 p-2 rounded-lg border border-red-200">
-                        <AlertTriangle size={14} />
-                        <span className="text-[10px] font-bold uppercase tracking-widest">
-                          Cannot surrender: {vehicle.status.replace("_", " ")}
-                        </span>
+                      <div className="flex flex-col gap-1 p-3 rounded-xl bg-red-50 border border-red-100 text-red-600">
+                        <div className="flex items-center gap-2">
+                          <AlertTriangle size={16} />
+                          <span className="text-xs font-bold uppercase tracking-wider">
+                            Ineligible for Surrender
+                          </span>
+                        </div>
+                        <p className="text-[10px] font-medium opacity-80 leading-relaxed ml-6">
+                          {vehicle.status === "RFD" 
+                            ? "This vehicle is already in stock (Ready for Delivery)." 
+                            : vehicle.status === "DAMAGED" 
+                            ? "This vehicle is already reported as damaged and in the queue." 
+                            : vehicle.status === "UNDER_REPAIR" 
+                            ? "This vehicle is currently undergoing repairs in the workshop."
+                            : `Vehicle is currently ${vehicle.status.replace("_", " ")}.`}
+                        </p>
                       </div>
                     )}
                   </div>
